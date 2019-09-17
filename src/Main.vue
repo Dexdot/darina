@@ -1,8 +1,11 @@
 <template>
   <section class="cases">
     <ul class="cases-list">
-      <li class="cases-li" v-for="project in cases" :key="project.sys.id">
-        <router-link class="cases-title" :to="`/case/${project.fields.slug}`">
+      <li class="cases-li" v-for="project in sortedCases" :key="project.sys.id">
+        <router-link
+          :class="['cases-title', getCaseClass(project)]"
+          :to="`/case/${project.fields.slug}`"
+        >
           <sup v-if="project.fields.soon">soon</sup>
           <sup v-else>{{ project.fields.year }}</sup>
           {{ project.fields.title }}</router-link
@@ -20,8 +23,37 @@ export default {
   data: () => ({
     cases: []
   }),
+  computed: {
+    sortedCases() {
+      let second = false
+      let c = 0
+
+      return this.cases.map(el => {
+        if (!el.fields.fullscreen) {
+          if (c >= 3) {
+            el.fields.even = second
+            c = 0
+            second = !second
+          } else {
+            c += 1
+            el.fields.even = second
+          }
+        } else {
+          c = 0
+          second = !second
+        }
+        return el
+      })
+    }
+  },
   async created() {
     this.cases = await getCases(this)
+  },
+  methods: {
+    getCaseClass(project) {
+      if (project.fields.fullscreen) return 'cases-title--fullscreen'
+      else return project.fields.even ? 'cases-title--even' : 'cases-title--odd'
+    }
   }
 }
 </script>
@@ -55,4 +87,8 @@ export default {
     left: 0.6em
     top: 1.2em
     vertical-align: top
+
+    display: none
+    @media (max-width: 500px)
+      display: block
 </style>
