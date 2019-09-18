@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import VirtualScroll from 'virtual-scroll'
 import inobounce from 'inobounce'
 
@@ -111,9 +110,6 @@ export default {
 
     // Start Inobounce
     inobounce.enable()
-
-    // Create v-fixed directive
-    this.createFixDirective()
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
@@ -164,11 +160,6 @@ export default {
       this.deltaY = deltaY
       this.scroll = window.pageYOffset
     },
-    createFixDirective() {
-      Vue.directive('fix', el => {
-        el.style.transform = `translate3d(0, ${this.translate}px, 0)`
-      })
-    },
     setColors(colors) {
       this.colors = [
         ...colors.map(pair => {
@@ -187,8 +178,8 @@ export default {
     async enter(el, done) {
       // const transitionEnter =
       //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.to.name
-      const transitionEnter = this.dir.to.name
-      await transitions[transitionEnter].enter(el)
+      // const transitionEnter = this.dir.to.name
+      await transitions['main'].enter(el)
 
       done()
     },
@@ -197,8 +188,8 @@ export default {
 
       // const transitionLeave =
       //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
-      const transitionLeave = this.dir.from.name
-      await transitions[transitionLeave].leave(el)
+      // const transitionLeave = this.dir.from.name
+      await transitions['main'].leave(el)
 
       this.scroll = 0
       this.translate = 0
@@ -240,6 +231,17 @@ body.is-macos:not(.is-safari)
     &:active,
     &:focus
       color: var(--color-text)
+
+  &.case-fullscreen
+    color: #fff
+
+    /deep/ a
+      &,
+      &:visited,
+      &:active,
+      &:focus
+        color: #fff
+
 
 .scroll-container
   width: 100vw
