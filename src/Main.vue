@@ -1,15 +1,26 @@
 <template>
   <section class="cases">
     <ul class="cases-list">
-      <li class="cases-li" v-for="project in sortedCases" :key="project.sys.id">
+      <li
+        class="cases-li"
+        v-for="(project, i) in sortedCases"
+        :key="project.sys.id"
+      >
         <router-link
-          class="case"
+          :class="[
+            'case',
+            { 'case--faded': image.visible && i !== titleIndex }
+          ]"
           :to="`/case/${project.fields.slug}`"
-          @mouseover.native="onMouseover(project.fields)"
-          @mouseout.native="onMouseout(project.fields)"
+          @mouseover.native="onMouseover({ fields: project.fields, i }, $event)"
+          @mouseout.native="onMouseout"
         >
-          <sup class="case__sup" v-if="project.fields.soon">soon</sup>
-          <sup class="case__sup" v-else>{{ project.fields.year }}</sup>
+          <sup class="case__sup case__sup--soon" v-if="project.fields.soon"
+            >soon</sup
+          >
+          <sup class="case__sup case__sup--year" v-else>{{
+            project.fields.year
+          }}</sup>
           {{ project.fields.title }}</router-link
         >
       </li>
@@ -31,6 +42,7 @@ export default {
   name: 'Main',
   props: { scroll: { type: Number, default: 0 } },
   data: () => ({
+    titleIndex: 0,
     cases: [],
     image: { visible: false, src: '', alt: '', classes: [] }
   }),
@@ -63,6 +75,31 @@ export default {
     this.cases = await getCases(this)
   },
   methods: {
+    onMouseover({ fields, i }, { target }) {
+      const { preview } = fields
+
+      // Set preview image
+      this.image = {
+        visible: true,
+        src: preview.fields.file.url,
+        alt: preview.fields.title,
+        classes: this.getCaseClasses(fields)
+      }
+      this.titleIndex = i
+
+      // Active title
+      target.classList.add('active')
+
+      this.$emit('case-mouseover', fields.fullscreen)
+    },
+    onMouseout({ target }) {
+      this.image.visible = false
+
+      // Active title
+      target.classList.remove('active')
+
+      this.$emit('case-mouseout')
+    },
     getCaseClasses(fields) {
       const classes = []
 
@@ -74,24 +111,6 @@ export default {
       }
 
       return classes
-    },
-    onMouseover(fields) {
-      const { preview } = fields
-
-      this.image = {
-        visible: true,
-        src: preview.fields.file.url,
-        alt: preview.fields.title,
-        classes: this.getCaseClasses(fields)
-      }
-
-      if (fields.fullscreen) {
-        document.querySelector('#app').classList.add('case-fullscreen')
-      }
-    },
-    onMouseout() {
-      this.image.visible = false
-      document.querySelector('#app').classList.remove('case-fullscreen')
     }
   }
 }
@@ -121,23 +140,39 @@ export default {
   &:not(:last-child)
     margin-bottom: 4px
 
+    @media (max-width: 500px)
+      margin-bottom: 8px
+
 .case
   line-height: 1
-  +yo('font-size', (375px: 48px, 1920px: 96px))
+  +yo('font-size', (320px: 40px, 375px: 48px, 1920px: 96px))
+
+  transition: opacity 0.25s ease
+
+.case--faded:not(.active)
+  opacity: 0.35
 
 .case__sup
-  font-size: 12px
+  +yo('font-size', (375px: 12px, 1920px: 22px))
   letter-spacing: 0
 
   left: 0.6em
-  top: 1.2em
+  top: 0.25em
   vertical-align: top
+  transition: opacity 0.25s ease
+  opacity: 0
 
-  display: none
   @media (max-width: 500px)
-    display: block
+    opacity: 0.35
+
+.case.active .case__sup
+  opacity: 1
+
+  @media (max-width: 500px)
+    opacity: 0.35
 
 .case__img-w
+  z-index: -1
   position: fixed
   pointer-events: none
 
@@ -145,11 +180,16 @@ export default {
   display: block
   max-width: 100%
   height: auto
+  @media (max-width: 500px)
+    display: none
 
 .case__img--fullscreen
-  z-index: -1
   top: 0
   left: 0
+
+  .case__img
+    object-fit: cover
+
   &::before
     z-index: 1
     content: ''

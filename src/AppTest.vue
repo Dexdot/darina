@@ -25,11 +25,12 @@
     <Menu :active="isMenuActive" />
 
     <div class="scroll-container" ref="container">
-      <main
+      <!-- <main
         class="scroll-inner"
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
-      >
+      > -->
+      <main class="scroll-inner" ref="inner">
         <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
           <router-view
             :key="$route.path"
@@ -44,30 +45,30 @@
 </template>
 
 <script>
-import VirtualScroll from 'virtual-scroll'
-import inobounce from 'inobounce'
+// import VirtualScroll from 'virtual-scroll'
+// import inobounce from 'inobounce'
 
 import Menu from '@/Menu'
 
-import loop from '@/scripts/loop'
+// import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
-import { isSafari, isMACOS, isMobileDevice } from '@/scripts/detect'
+// import { isSafari, isMACOS, isMobileDevice } from '@/scripts/detect'
 
 import transitions from '@/transitions/'
 
-const roundDec = n => Math.round(n * 100) / 100
-const lerp = (a, b, n) => (1 - n) * a + n * b
-const detectDevices = () => {
-  if (isMACOS()) {
-    document.querySelector('body').classList.add('is-macos')
-  }
-  if (isSafari()) {
-    document.querySelector('body').classList.add('is-safari')
-  }
-  if (isMobileDevice()) {
-    document.querySelector('body').classList.add('is-mob')
-  }
-}
+// const roundDec = n => Math.round(n * 100) / 100
+// const lerp = (a, b, n) => (1 - n) * a + n * b
+// const detectDevices = () => {
+//   if (isMACOS()) {
+//     document.querySelector('body').classList.add('is-macos')
+//   }
+//   if (isSafari()) {
+//     document.querySelector('body').classList.add('is-safari')
+//   }
+//   if (isMobileDevice()) {
+//     document.querySelector('body').classList.add('is-mob')
+//   }
+// }
 
 export default {
   name: 'App',
@@ -81,12 +82,12 @@ export default {
     caseHovered: false,
     caseFullscreen: false,
     scroll: 0,
-    translate: 0,
+    // translate: 0,
     deltaY: 0,
     vs: null,
     winHeight: 0,
     dir: {},
-    debug: ''
+    debug: 'bambam'
   }),
   computed: {
     activeColor() {
@@ -97,45 +98,48 @@ export default {
     this.setColors(await fetchPalette())
   },
   mounted() {
-    detectDevices()
+    // detectDevices()
 
     // Window height
     this.getWinHeight()
     window.addEventListener('resize', this.getWinHeight.bind(this))
 
     // Start RAF
-    loop.start()
+    // loop.start()
 
     // On Scroll
-    this.vs = new VirtualScroll({
-      mouseMultiplier: 0.8,
-      touchMultiplier: 4,
-      passive: true
-    })
+    // this.vs = new VirtualScroll({
+    //   mouseMultiplier: 0.8,
+    //   touchMultiplier: 4,
+    //   passive: true
+    // })
 
-    if (isSafari() || isMobileDevice()) {
-      window.addEventListener('scroll', this.defaultScroll.bind(this))
-    } else {
-      this.vs.on(this.onScroll)
-      loop.add(this.checkSmooth.bind(this), 'checkSmooth')
-    }
+    window.addEventListener('scroll', this.defaultScroll.bind(this))
+    // if (isSafari() || isMobileDevice()) {
+    //   window.addEventListener('scroll', this.defaultScroll.bind(this))
+    // } else {
+    //   this.vs.on(this.onScroll)
+    //   loop.add(this.checkSmooth.bind(this), 'checkSmooth')
+    // }
 
-    // Start Inobounce
-    inobounce.enable()
+    // // Start Inobounce
+    // inobounce.enable()
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
+    window.removeEventListener('scroll', this.defaultScroll.bind(this))
 
-    if (isSafari() || isMobileDevice()) {
-      window.removeEventListener('scroll', this.defaultScroll.bind(this))
-    } else {
-      this.vs.off(this.onScroll)
-      loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
-    }
+    // if (isSafari() || isMobileDevice()) {
+    //   window.removeEventListener('scroll', this.defaultScroll.bind(this))
+    // } else {
+    //   this.vs.off(this.onScroll)
+    //   loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
+    // }
   },
   methods: {
     getTranslate() {
-      return isSafari() || isMobileDevice() ? this.scroll : this.translate
+      return this.scroll
+      // return isSafari() || isMobileDevice() ? this.scroll : this.translate
     },
     getWinHeight() {
       this.winHeight = window.innerHeight
@@ -143,31 +147,31 @@ export default {
     toggleMenu() {
       this.isMenuActive = !this.isMenuActive
     },
-    onScroll({ deltaY }) {
-      this.deltaY = deltaY
-      const scroll = this.scroll + -1 * deltaY
+    // onScroll({ deltaY }) {
+    //   this.deltaY = deltaY
+    //   const scroll = this.scroll + -1 * deltaY
 
-      this.scroll = Math.min(
-        Math.max(scroll, 0),
-        this.$refs.inner.getBoundingClientRect().height - this.winHeight
-      )
-    },
-    checkSmooth() {
-      const roundTranslate = Math.round(this.translate)
-      const roundScroll = Math.round(this.scroll)
+    //   this.scroll = Math.min(
+    //     Math.max(scroll, 0),
+    //     this.$refs.inner.getBoundingClientRect().height - this.winHeight
+    //   )
+    // },
+    // checkSmooth() {
+    //   const roundTranslate = Math.round(this.translate)
+    //   const roundScroll = Math.round(this.scroll)
 
-      if (roundScroll !== roundTranslate) {
-        this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
+    //   if (roundScroll !== roundTranslate) {
+    //     this.translate = roundDec(lerp(this.translate, this.scroll, 0.03))
 
-        // Round scroll (chrome transform bluring)
-        if (
-          roundTranslate >= roundScroll - 1 &&
-          roundTranslate <= roundScroll + 1
-        ) {
-          this.translate = Math.round(lerp(this.translate, this.scroll, 0.03))
-        }
-      }
-    },
+    //     // Round scroll (chrome transform bluring)
+    //     if (
+    //       roundTranslate >= roundScroll - 1 &&
+    //       roundTranslate <= roundScroll + 1
+    //     ) {
+    //       this.translate = Math.round(lerp(this.translate, this.scroll, 0.03))
+    //     }
+    //   }
+    // },
     defaultScroll({ deltaY }) {
       this.deltaY = deltaY
       this.scroll = window.pageYOffset
@@ -212,7 +216,7 @@ export default {
       await transitions['main'].leave(el)
 
       this.scroll = 0
-      this.translate = 0
+      // this.translate = 0
       window.scrollTo(0, 0)
 
       done()
@@ -230,14 +234,13 @@ export default {
 body.is-macos:not(.is-safari)
   overflow: hidden
 
-.is-safari,
-.is-mob
-  overflow: unset !important
-
-  .scroll-container
-    width: auto !important
-    height: auto !important
-    overflow: unset !important
+// .is-safari,
+// .is-mob
+//   overflow: unset !important
+//   .scroll-container
+//     width: auto !important
+//     height: auto !important
+//     overflow: unset !important
 </style>
 
 <style lang="sass" scoped>
@@ -269,13 +272,13 @@ body.is-macos:not(.is-safari)
       color: #fff
 
 
-.scroll-container
-  width: 100vw
+// .scroll-container
+//   width: 100vw
 
-.scroll-container
-  height: 100vh
-  height: calc(var(--vh, 1vh) * 100)
-  overflow: hidden
+// .scroll-container
+//   height: 100vh
+//   height: calc(var(--vh, 1vh) * 100)
+//   overflow: hidden
 
 .logo, .nav
   transition: opacity 0.25s ease
