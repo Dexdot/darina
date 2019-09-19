@@ -8,10 +8,7 @@
     }"
     @click="onAppClick"
   >
-    <router-link class="logo" to="/"
-      >Darina Yurina
-      <p>{{ debug }}</p></router-link
-    >
+    <router-link class="logo" to="/">Darina Yurina</router-link>
     <nav class="nav">
       <ul class="u-flex">
         <li class="nav__li">
@@ -45,7 +42,7 @@
 
 <script>
 import VirtualScroll from 'virtual-scroll'
-import inobounce from 'inobounce'
+// import inobounce from 'inobounce'
 
 import Menu from '@/Menu'
 
@@ -85,8 +82,7 @@ export default {
     deltaY: 0,
     vs: null,
     winHeight: 0,
-    dir: {},
-    debug: ''
+    dir: {}
   }),
   computed: {
     activeColor() {
@@ -121,7 +117,7 @@ export default {
     }
 
     // Start Inobounce
-    inobounce.enable()
+    // inobounce.enable()
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
