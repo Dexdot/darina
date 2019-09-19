@@ -2,6 +2,7 @@
   <section class="cases">
     <ul class="cases-list">
       <li
+        ref="cases"
         class="cases-li"
         v-for="(project, i) in sortedCases"
         :key="project.sys.id"
@@ -71,8 +72,11 @@ export default {
       })
     }
   },
-  async created() {
+  async mounted() {
     this.cases = await getCases(this)
+    this.$nextTick(() => {
+      this.observe()
+    })
   },
   methods: {
     onMouseover({ fields, i }, { target }) {
@@ -111,6 +115,21 @@ export default {
       }
 
       return classes
+    },
+    observe() {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(({ target, isIntersecting }) => {
+          if (isIntersecting) {
+            target.classList.add('visible')
+            const i = Array.from(target.parentElement.children).indexOf(target)
+            observer.unobserve(this.$refs.cases[i])
+          }
+        })
+      })
+
+      this.$refs.cases.forEach(c => {
+        observer.observe(c)
+      })
     }
   }
 }
@@ -269,4 +288,13 @@ export default {
     .case__img
       width: column-spans(6)
       transform: translate(0, -50%)
+
+// ANIMATION
+.cases-li
+  overflow: hidden
+.case
+  transform: translate3d(0, 200%, 0)
+  transition: transform 1.4s cubic-bezier(.25,.75,.34,.98)
+.cases-li.visible .case
+  transform: translate3d(0, 0%, 0)
 </style>
