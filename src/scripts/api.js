@@ -50,3 +50,18 @@ export const getCases = ctx =>
       })
     }
   })
+
+export const getCase = (ctx, slug) =>
+  new Promise(resolve => {
+    const projectFromStore = ctx.$store.getters.cases.find(
+      el => el.fields.slug === 'slug'
+    )
+
+    if (projectFromStore) {
+      resolve(projectFromStore)
+    } else {
+      fetchCase(slug).then(project => {
+        resolve(project)
+      })
+    }
+  })

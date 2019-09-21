@@ -1,10 +1,15 @@
 import Fade from './Fade'
+import Main from './Main'
+import Stories from './Stories'
 
 const transitions = {
   main: {
-    ...Fade
+    ...Main
   },
-  project: {
+  case: {
+    ...Stories
+  },
+  about: {
     ...Fade
   }
 }

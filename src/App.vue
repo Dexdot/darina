@@ -194,8 +194,9 @@ export default {
     async enter(el, done) {
       // const transitionEnter =
       //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.to.name
-      // const transitionEnter = this.dir.to.name
-      await transitions['main'].enter(el)
+      // await transitions['main'].enter(el)
+      const transitionEnter = this.dir.to.name
+      await transitions[transitionEnter].enter(el)
 
       done()
     },
@@ -204,8 +205,9 @@ export default {
 
       // const transitionLeave =
       //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
-      // const transitionLeave = this.dir.from.name
-      await transitions['main'].leave(el)
+      // await transitions['main'].leave(el)
+      const transitionLeave = this.dir.from.name
+      await transitions[transitionLeave].leave(el)
 
       this.scroll = 0
       this.translate = 0
@@ -319,7 +321,7 @@ body.is-macos:not(.is-safari)
     width: 4px
     height: 4px
 
-    background: $black
+    background: var(--color-text)
     border-radius: 50%
     opacity: 0
     transition: 0.2s ease

@@ -153,20 +153,20 @@ export default {
   flex-direction: column
   align-items: flex-end
 
-.cases-li
+.cases-li   
+  padding-top: 0.15em
+  padding-bottom: 0.325em
   display: inline-flex
   text-align: right
-  &:not(:last-child)
-    margin-bottom: 4px
+  // &:not(:last-child)
+  //   margin-bottom: 4px
 
-    @media (max-width: 500px)
-      margin-bottom: 8px
+  //   @media (max-width: 500px)
+  //     margin-bottom: 8px
 
 .case
   line-height: 1
   +yo('font-size', (320px: 40px, 375px: 48px, 1920px: 96px))
-
-  transition: opacity 0.25s ease
 
 .case--faded:not(.active)
   opacity: 0.35
@@ -202,6 +202,7 @@ export default {
   @media (max-width: 500px)
     display: none
 
+// Image sizes
 .case__img--fullscreen
   top: 0
   left: 0
@@ -294,7 +295,7 @@ export default {
   overflow: hidden
 .case
   transform: translate3d(0, 200%, 0)
-  transition: transform 1.4s cubic-bezier(.25,.75,.34,.98)
+  transition: transform 1.4s cubic-bezier(.25,.75,.34,.98), opacity 0.25s ease
 .cases-li.visible .case
   transform: translate3d(0, 0%, 0)
 </style>
