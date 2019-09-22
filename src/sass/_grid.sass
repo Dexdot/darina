@@ -1,5 +1,6 @@
 \:root
-  --unit: 3.335vw
+  --unit-v: 48px
+  --unit-h: 3.335vw
 
   // Grid proportions
   --grid-width: 1792
@@ -19,7 +20,13 @@
   --column-and-gutter-unit: calc(var(--column-unit) + var(--gutter-unit))
 
   // Container Width
-  --container-width: calc(100vw - var(--unit) * 2)
+  --container-width: calc(100vw - var(--unit-h) * 2)
+
+  @media (max-width: 1440px)
+    --unit-v: 40px
+  @media (max-width: 500px)
+    --unit-v: 32px
+    --unit-h: 24px
   
 @function columns($i)
   @return calc(#{$i} * var(--column-unit))

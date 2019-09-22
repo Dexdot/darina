@@ -12,10 +12,8 @@ const enter = (el, cb) =>
       },
       complete: () => {
         el.style.willChange = ''
+        resolve()
         if (cb) cb()
-      },
-      update: ({ progress }) => {
-        if (progress >= 80) resolve()
       }
     })
   })
@@ -32,10 +30,8 @@ const leave = (el, cb) =>
       },
       complete: () => {
         el.style.willChange = ''
+        resolve()
         if (cb) cb()
-      },
-      update: ({ progress }) => {
-        if (progress >= 80) resolve()
       }
     })
   })

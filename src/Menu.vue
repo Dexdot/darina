@@ -134,13 +134,13 @@ export default {
   z-index: 1
   position: absolute
   top: 50%
-  right: calc(#{var(--unit)} + #{mix(1)})
+  right: calc(#{var(--unit-h)} + #{mix(1)})
   transform: translateY(-50%)
 
   text-align: right
 
   @media (max-width: 500px)
-    right: var(--unit)
+    right: var(--unit-h)
 
 .menu__link
   transition: 0.25s ease

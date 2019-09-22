@@ -7,7 +7,20 @@
         v-for="(project, i) in sortedCases"
         :key="project.sys.id"
       >
+        <p
+          v-if="project.fields.soon"
+          :class="[
+            'case',
+            { 'case--faded': image.visible && i !== titleIndex }
+          ]"
+          @mouseover="onMouseover({ fields: project.fields, i }, $event)"
+          @mouseout="onMouseout"
+        >
+          <sup class="case__sup case__sup--soon">soon</sup>
+          {{ project.fields.title }}
+        </p>
         <router-link
+          v-else
           :class="[
             'case',
             { 'case--faded': image.visible && i !== titleIndex }
@@ -16,12 +29,7 @@
           @mouseover.native="onMouseover({ fields: project.fields, i }, $event)"
           @mouseout.native="onMouseout"
         >
-          <sup class="case__sup case__sup--soon" v-if="project.fields.soon"
-            >soon</sup
-          >
-          <sup class="case__sup case__sup--year" v-else>{{
-            project.fields.year
-          }}</sup>
+          <sup class="case__sup case__sup--year">{{ project.fields.year }}</sup>
           {{ project.fields.title }}</router-link
         >
       </li>
@@ -139,10 +147,10 @@ export default {
 @import "~@/sass/utils"
 
 .cases
-  padding-top: 48px
-  padding-bottom: 48px
-  padding-left: var(--unit)
-  padding-right: var(--unit)
+  padding-top: var(--unit-v)
+  padding-bottom: var(--unit-v)
+  padding-left: var(--unit-h)
+  padding-right: var(--unit-h)
 
   @media (max-width: 700px)
     padding-top: 176px
@@ -233,7 +241,7 @@ export default {
     top: calc(var(--vh, 1vh) * 14.8)
     left: 0
     .case__img
-      width: calc(#{column-spans(5)} + #{var(--unit)})
+      width: calc(#{column-spans(5)} + #{var(--unit-h)})
 
   &.case__img--2
     top: 50vh
@@ -245,14 +253,14 @@ export default {
 
   &.case__img--3
     top: 0
-    left: calc(#{mix(2)} + #{var(--unit)})
+    left: calc(#{mix(2)} + #{var(--unit-h)})
     .case__img
       width: column-spans(5)
 
   &.case__img--4
     top: 85.2vh
     top: calc(var(--vh, 1vh) * 85.2)
-    left: calc(#{mix(1)} + #{var(--unit)})
+    left: calc(#{mix(1)} + #{var(--unit-h)})
     .case__img
       width: column-spans(5)
       transform: translateY(-100%)
@@ -262,7 +270,7 @@ export default {
   &.case__img--1
     top: 14.8vh
     top: calc(var(--vh, 1vh) * 14.8)
-    left: calc(#{mix(1)} + #{var(--unit)})
+    left: calc(#{mix(1)} + #{var(--unit-h)})
     .case__img
       width: column-spans(5)
 

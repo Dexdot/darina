@@ -230,7 +230,7 @@ body.is-macos:not(.is-safari)
 
 .is-safari,
 .is-mob
-  overflow: unset !important
+  // overflow: unset !important
 
   .scroll-container
     width: auto !important
@@ -242,6 +242,8 @@ body.is-macos:not(.is-safari)
 @import "~@/sass/utils"
 
 #app
+  min-height: 100vh
+  min-height: calc(var(--vh, 1vh) * 100)
   color: var(--color-text)
   background: var(--color-bg)
 
@@ -286,17 +288,14 @@ body.is-macos:not(.is-safari)
 
   z-index: 2
   position: fixed
-  top: 48px
-  left: var(--unit)
-
-  @media (max-width: 500px)
-    top: 32px
+  top: var(--unit-v)
+  left: var(--unit-h)
 
 .nav
   z-index: 2
   position: fixed
-  bottom: 48px
-  left: var(--unit)
+  bottom: var(--unit-v)
+  left: var(--unit-h)
 
   @media (max-width: 500px)
     display: none
