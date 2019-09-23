@@ -9,6 +9,18 @@ const PALETTE_ID = process.env.VUE_APP_PALETTE_ID
 // Client instance
 const client = contentful.createClient({ accessToken, space })
 
+export const fetchAbout = () =>
+  new Promise(resolve => {
+    // Get black
+    client
+      .getEntries({
+        content_type: 'about'
+      })
+      .then(({ items }) => {
+        resolve(items[0] ? items[0].fields : null)
+      })
+  })
+
 export const fetchCase = slug =>
   new Promise(resolve => {
     // Get black

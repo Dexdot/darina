@@ -13,7 +13,7 @@ export default new Router({
       component: () => import('@/Main.vue')
     },
     {
-      path: '/',
+      path: '/about',
       name: 'about',
       component: () => import('@/About/index.vue')
     },
