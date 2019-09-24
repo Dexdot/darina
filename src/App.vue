@@ -100,7 +100,7 @@ export default {
     isCreditsActive: false,
     caseHovered: false,
     caseFullscreen: false,
-    isNotScrolling: false,
+    isNotScrolling: true,
     scroll: 0,
     translate: 0,
     deltaY: 0,

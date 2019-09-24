@@ -1,3 +1,5 @@
+import '@/scripts/split-text'
+
 import Vue from 'vue'
 import App from '@/App.vue'
 
@@ -7,8 +9,6 @@ import { fetchCases } from '@/scripts/api'
 import '@/scripts/css-props'
 
 import '@/sass/main.sass'
-import anime from 'animejs'
-window.anime = anime
 
 Vue.config.productionTip = false
 

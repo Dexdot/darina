@@ -1,7 +1,7 @@
 <template>
   <article class="about">
     <div class="about__container" v-if="content">
-      <h1 class="about__title">
+      <h1 :class="['about__title', { 'js-splitted': splitted }]" ref="title">
         <span
           v-for="(p, i) in content.title.content"
           :key="i"
@@ -111,19 +111,78 @@
 </template>
 
 <script>
+import anime from 'animejs'
+
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { fetchAbout } from '@/scripts/api'
+
+const { SplitText } = window
+
+const wrap = (el, wrapper) => {
+  el.parentNode.insertBefore(wrapper, el)
+  wrapper.appendChild(el)
+}
 
 export default {
   name: 'About',
   data: () => ({
-    content: null
+    content: null,
+    splits: [],
+    splitted: false
   }),
   methods: {
-    render: item => documentToHtmlString(item)
+    render: item => documentToHtmlString(item),
+    split() {
+      this.$refs.title.querySelectorAll('span').forEach(span => {
+        this.splits.push(
+          new SplitText(span, { type: 'lines', linesClass: 'title-line' })
+        )
+      })
+
+      this.$refs.title.querySelectorAll('.title-line').forEach(line => {
+        const div = document.createElement('div')
+        div.classList.add('ovh')
+        wrap(line, div)
+      })
+
+      this.splitted = true
+
+      this.observe()
+      // window.anime = anime
+    },
+    unsplit() {
+      this.splits.forEach(split => {
+        split.revert()
+      })
+      this.splitted = false
+    },
+    observe() {
+      const { title } = this.$refs
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(({ intersectionRatio, isIntersecting }) => {
+          if (isIntersecting && intersectionRatio > 0.3) {
+            anime({
+              targets: title.querySelectorAll('.title-line'),
+              translateY: ['150%', '0%'],
+              delay: anime.stagger(30),
+              duration: 850,
+              easing: 'cubicBezier(0.25, 0.75, 0.34, 0.98)'
+            })
+            observer.unobserve(title)
+          }
+        })
+      })
+
+      observer.observe(title)
+    }
   },
-  async created() {
+  async mounted() {
     this.content = await fetchAbout()
+    this.$nextTick(() => {
+      this.split()
+      window.addEventListener('resize', this.unsplit.bind(this))
+    })
   }
 }
 </script>
@@ -149,10 +208,24 @@ export default {
   @media (max-width: 1000px)
     margin-bottom: 80px
 
-  span
+  /deep/ .ovh
+    white-space: pre-wrap
+    overflow: hidden
+    display: inline-block !important
+
+  & > span
     display: block
-  span:not(:first-child)
+
+  &:not(.js-splitted) > span:not(:first-child)
     text-indent: 2.7em
+
+  &.js-splitted
+    /deep/ .title-line
+      will-change: transform
+      transform: translateY(150%)
+
+    & > span:not(:first-child) /deep/ .ovh:first-child .title-line
+      text-indent: 2.7em
 
 .about__img
   display: block
