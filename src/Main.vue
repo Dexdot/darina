@@ -11,9 +11,9 @@
           v-if="project.fields.soon"
           :class="[
             'case',
-            { 'case--faded': image.visible && i !== titleIndex }
+            { 'case--faded': titleIndex !== i && titleIndex !== -1 }
           ]"
-          @mouseover="onMouseover({ fields: project.fields, i }, $event)"
+          @mouseover="onMouseover({ fields: project.fields, i })"
           @mouseout="onMouseout"
         >
           <sup class="case__sup case__sup--soon">soon</sup>
@@ -23,10 +23,10 @@
           v-else
           :class="[
             'case',
-            { 'case--faded': image.visible && i !== titleIndex }
+            { 'case--faded': titleIndex !== i && titleIndex !== -1 }
           ]"
           :to="`/case/${project.fields.slug}`"
-          @mouseover.native="onMouseover({ fields: project.fields, i }, $event)"
+          @mouseover.native="onMouseover({ fields: project.fields, i })"
           @mouseout.native="onMouseout"
         >
           <sup class="case__sup case__sup--year">{{ project.fields.year }}</sup>
@@ -34,12 +34,21 @@
         >
       </li>
     </ul>
-    <div
-      :class="['case__img-w', { visible: image.visible }, ...image.classes]"
-      :style="{ transform: `translate3d(0, ${scroll}px, 0)` }"
-    >
-      <img class="case__img" :src="image.src" :alt="image.alt" />
-    </div>
+
+    <template v-if="images && images.length > 0">
+      <div
+        v-for="(img, i) in images"
+        :key="img.src + i"
+        :class="[
+          'case__img-w',
+          ...img.classes,
+          { visible: img.i === titleIndex }
+        ]"
+        :style="{ transform: `translate3d(0, ${scroll}px, 0)` }"
+      >
+        <img class="case__img" :src="img.src" :alt="img.alt" />
+      </div>
+    </template>
   </section>
 </template>
 
@@ -50,9 +59,8 @@ export default {
   name: 'Main',
   props: { scroll: { type: Number, default: 0 } },
   data: () => ({
-    titleIndex: 0,
-    cases: [],
-    image: { visible: false, src: '', alt: '', classes: [] }
+    titleIndex: -1,
+    cases: []
   }),
   computed: {
     sortedCases() {
@@ -77,6 +85,14 @@ export default {
         }
         return el
       })
+    },
+    images() {
+      return this.sortedCases.map(({ fields }, i) => ({
+        src: fields.preview.fields.file.url,
+        alt: fields.preview.fields.title,
+        classes: this.getCaseClasses(fields),
+        i
+      }))
     }
   },
   async mounted() {
@@ -86,29 +102,12 @@ export default {
     })
   },
   methods: {
-    onMouseover({ fields, i }, { target }) {
-      const { preview } = fields
-
-      // Set preview image
-      this.image = {
-        visible: true,
-        src: preview.fields.file.url,
-        alt: preview.fields.title,
-        classes: this.getCaseClasses(fields)
-      }
+    onMouseover({ fields, i }) {
       this.titleIndex = i
-
-      // Active title
-      target.classList.add('active')
-
       this.$emit('case-mouseover', fields.fullscreen)
     },
-    onMouseout({ target }) {
-      this.image.visible = false
-
-      // Active title
-      target.classList.remove('active')
-
+    onMouseout() {
+      this.titleIndex = -1
       this.$emit('case-mouseout')
     },
     getCaseClasses(fields) {
@@ -160,16 +159,11 @@ export default {
   flex-direction: column
   align-items: flex-end
 
-.cases-li   
+.cases-li
   padding-top: 0.15em
   padding-bottom: 0.325em
   display: inline-flex
   text-align: right
-  // &:not(:last-child)
-  //   margin-bottom: 4px
-
-  //   @media (max-width: 500px)
-  //     margin-bottom: 8px
 
 .case
   line-height: 1

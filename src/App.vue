@@ -130,6 +130,7 @@ export default {
     this.vs = new VirtualScroll({
       mouseMultiplier: 0.8,
       touchMultiplier: 4,
+      firefoxMultiplier: 25,
       passive: true
     })
 
