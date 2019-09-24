@@ -8,8 +8,24 @@
     }"
     @click="onAppClick"
   >
-    <router-link class="logo" to="/">Darina Yurina</router-link>
-    <nav class="nav">
+    <router-link :class="['logo', { hidden: !isNotScrolling }]" to="/"
+      >Darina Yurina</router-link
+    >
+
+    <button
+      :class="[
+        'menu-btn',
+        { active: isMenuActive || isCreditsActive, hidden: !isNotScrolling }
+      ]"
+      @click="toggleMenu"
+    >
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+    </button>
+
+    <nav :class="['nav', { hidden: !isNotScrolling }]">
       <ul class="u-flex">
         <li class="nav__li">
           <router-link class="nav__link" to="/">Cases</router-link>
@@ -19,7 +35,9 @@
         </li>
       </ul>
     </nav>
+
     <Menu :active="isMenuActive" />
+    <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
 
     <div class="scroll-container" ref="container">
       <main
@@ -31,8 +49,10 @@
           <router-view
             :key="$route.path"
             :scroll="getTranslate()"
+            :isNotScrolling="isNotScrolling"
             @case-mouseover="onCaseMouseover"
             @case-mouseout="onCaseMouseout"
+            @credits-click="toggleCredits(true)"
           />
         </transition>
       </main>
@@ -45,6 +65,7 @@ import VirtualScroll from 'virtual-scroll'
 // import inobounce from 'inobounce'
 
 import Menu from '@/Menu'
+import Credits from '@/Credits'
 
 import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
@@ -69,14 +90,17 @@ const detectDevices = () => {
 export default {
   name: 'App',
   components: {
-    Menu
+    Menu,
+    Credits
   },
   data: () => ({
     colorIndex: 0,
     colors: [{ bg: 'EEE0D5', text: '1F2020' }],
     isMenuActive: false,
+    isCreditsActive: false,
     caseHovered: false,
     caseFullscreen: false,
+    isNotScrolling: false,
     scroll: 0,
     translate: 0,
     deltaY: 0,
@@ -111,6 +135,7 @@ export default {
 
     if (isSafari() || isMobileDevice()) {
       window.addEventListener('scroll', this.defaultScroll.bind(this))
+      this.isNotScrolling = true
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
@@ -137,9 +162,22 @@ export default {
       this.winHeight = window.innerHeight
     },
     toggleMenu() {
-      this.isMenuActive = !this.isMenuActive
+      // this.isMenuActive = !this.isMenuActive
+      if (this.isCreditsActive) {
+        // Credits close
+        this.isCreditsActive = false
+      } else {
+        // Menu toggle
+        this.isMenuActive = !this.isMenuActive
+      }
+    },
+    toggleCredits(show) {
+      this.isCreditsActive = show
     },
     onScroll({ deltaY }) {
+      if (!this.isMenuActive && !this.isCreditsActive)
+        this.isNotScrolling = false
+
       this.deltaY = deltaY
       const scroll = this.scroll + -1 * deltaY
 
@@ -160,7 +198,15 @@ export default {
           roundTranslate >= roundScroll - 1 &&
           roundTranslate <= roundScroll + 1
         ) {
+          this.isNotScrolling = true
           this.translate = Math.round(lerp(this.translate, this.scroll, 0.03))
+        }
+
+        if (
+          roundTranslate >= roundScroll - 50 &&
+          roundTranslate <= roundScroll + 50
+        ) {
+          this.isNotScrolling = true
         }
       }
     },
@@ -176,7 +222,19 @@ export default {
         })
       ]
     },
-    onAppClick() {
+    onAppClick({ target }) {
+      const tag = target.tagName.toLowerCase()
+      const { className } = target
+
+      const tags = ['a', 'button', 'svg', 'path']
+      const classes = ['stories-link', 'swiper-', 'story-img', 'menu-btn']
+
+      if (
+        tags.indexOf(tag) !== -1 ||
+        classes.some(cls => className.indexOf(cls) !== -1)
+      )
+        return false
+
       if (this.colorIndex === this.colors.length - 1) {
         this.colorIndex = 0
       } else {
@@ -230,8 +288,6 @@ body.is-macos:not(.is-safari)
 
 .is-safari,
 .is-mob
-  // overflow: unset !important
-
   .scroll-container
     width: auto !important
     height: auto !important
@@ -255,8 +311,13 @@ body.is-macos:not(.is-safari)
       color: var(--color-text)
 
 .app--faded
-  .logo, .nav
+  .logo, .nav, .menu-btn
     opacity: 0.35
+
+.logo, .nav, .menu-btn
+  &.hidden
+    opacity: 0
+    pointer-events: none
 
 .app--fullscreen
   color: #fff
@@ -268,7 +329,6 @@ body.is-macos:not(.is-safari)
     &:focus
       color: #fff
 
-
 .scroll-container
   width: 100vw
 
@@ -276,6 +336,45 @@ body.is-macos:not(.is-safari)
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
+
+.menu-btn
+  z-index: 2
+  position: fixed
+  top: var(--unit-v)
+  right: var(--unit-h)
+
+  display: none
+  flex-wrap: wrap
+  width: 24px
+  height: 24px
+  margin-left: -4px
+  margin-top: -4px
+  transition: transform 0.25s ease-in-out, opacity 0.25s ease
+  transform-origin: 50% 50%
+
+  @media (max-width: 500px)
+    display: flex
+
+.menu-btn:hover
+  opacity: 0.3
+
+.menu-btn.active
+  transform: rotate(45deg)
+
+.menu-btn__circle:nth-child(2)
+  margin-right: 30%
+
+.menu-btn:not(.active) .menu-btn__circle
+  background: var(--color-text)
+.menu-btn.active .menu-btn__circle
+  background: #fff
+
+.menu-btn__circle
+  border-radius: 50%
+  width: 4px
+  height: 4px
+  margin-left: 4px
+  margin-top: 4px
 
 .logo, .nav
   transition: opacity 0.25s ease
@@ -315,18 +414,31 @@ body.is-macos:not(.is-safari)
     position: absolute
     bottom: 100%
     left: 50%
-    transform: translate(-50%, -16px)
 
     width: 4px
     height: 4px
 
     background: var(--color-text)
     border-radius: 50%
-    opacity: 0
     transition: 0.2s ease
 
-.nav__link.router-link-exact-active::before,
-.nav__link:hover::before
+.nav__link:not(.router-link-exact-active)::before
+  transform: translate(-50%, -16px)
+  opacity: 0
+
+.nav__link.router-link-exact-active::before
   transform: translate(-50%, -8px)
   opacity: 1
+
+.nav:hover
+  .nav__link:not(.router-link-exact-active)::before,
+  .nav__link.router-link-exact-active::before
+    transform: translate(-50%, -16px)
+    opacity: 0
+
+.nav
+  .nav__link:not(.router-link-exact-active):hover::before,
+  .nav__link.router-link-exact-active:hover::before
+    transform: translate(-50%, -8px)
+    opacity: 1
 </style>

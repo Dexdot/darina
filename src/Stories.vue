@@ -216,6 +216,8 @@ export default {
     align-items: flex-end
     padding-bottom: calc(var(--unit-v) / 2)
 
+  @media (max-width: 500px)
+    padding-top: 40px
   // @media (max-width: 500px)
   //   align-items: flex-start
   //   padding-top: 96px
@@ -251,7 +253,8 @@ export default {
     width: 100%
     padding-bottom: 175.65%
     @media (max-width: 500px)
-      padding-bottom: 180%
+      padding-bottom: 160%
+      // padding-bottom: 180%
 
   @media (max-width: 500px)
     width: calc(100vw - (4 * var(--unit-h)))

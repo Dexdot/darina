@@ -103,13 +103,10 @@
           </svg>
         </div>
       </div>
+      <button class="credits-button" @click="$emit('credits-click')">
+        Credits
+      </button>
     </div>
-    <button
-      class="credits-button"
-      :style="{ transform: `translate3d(0, ${scroll - 19}px, 0)` }"
-    >
-      Credits
-    </button>
   </article>
 </template>
 
@@ -119,9 +116,6 @@ import { fetchAbout } from '@/scripts/api'
 
 export default {
   name: 'About',
-  props: {
-    scroll: { type: Number, default: 0 }
-  },
   data: () => ({
     content: null
   }),
@@ -130,7 +124,6 @@ export default {
   },
   async created() {
     this.content = await fetchAbout()
-    console.log(this.content)
   }
 }
 </script>
@@ -143,15 +136,10 @@ export default {
   margin-right: auto
   max-width: column-spans(12)
   padding-top: 25vh
-  padding-bottom: 33vh
+  padding-bottom: var(--unit-v)
 
   @media (max-width: 700px)
     padding-top: 176px
-    padding-bottom: 208px
-
-  @media (max-width: 500px)
-    padding-bottom: 160px
-
 .about__title
   +man
   +yo('font-size', (320px: 32px, 375px: 42px, 1920px: 96px, 2550px: 120px))
@@ -227,14 +215,10 @@ export default {
   text-transform: uppercase
   letter-spacing: 0.16em
 
-  position: fixed
-  top: calc(100vh - var(--unit-v))
-  // bottom: var(--unit-v)
-  right: var(--unit-h)
+  display: block
+  margin-left: auto
+  +yo('margin-top', (375px: 160px, 1920px: 292px))
 
   @media (max-width: 500px)
-    position: static
-    transform: unset !important
-    margin-left: var(--unit-h)
-    margin-bottom: 32px
+    margin-left: 0
 </style>

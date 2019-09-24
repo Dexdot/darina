@@ -35,8 +35,7 @@
       </li>
     </ul>
     <div
-      :class="['case__img-w', ...image.classes]"
-      v-show="image.visible"
+      :class="['case__img-w', { visible: image.visible }, ...image.classes]"
       :style="{ transform: `translate3d(0, ${scroll}px, 0)` }"
     >
       <img class="case__img" :src="image.src" :alt="image.alt" />
@@ -201,7 +200,12 @@ export default {
 .case__img-w
   z-index: -1
   position: fixed
+
+  transition: opacity 0.3s ease
   pointer-events: none
+  opacity: 0
+  &.visible
+    opacity: 1
 
 .case__img
   display: block

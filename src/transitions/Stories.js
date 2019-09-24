@@ -1,8 +1,18 @@
 import anime from 'animejs'
 
+const toggleNav = (show = true) => {
+  document.querySelectorAll('.logo, .nav, .menu-btn').forEach(el => {
+    if (show) {
+      el.classList.remove('hidden')
+    } else {
+      el.classList.add('hidden')
+    }
+  })
+}
+
 const enter = (el, cb) =>
   new Promise(resolve => {
-    anime.set('.logo, .nav', { 'pointer-events': 'none', opacity: 0 })
+    toggleNav(false)
 
     // 250 = swiper-slide transition-dur (active slide scaled)
     anime({
@@ -43,10 +53,7 @@ const leave = (el, cb) =>
       duration: 400,
       easing: 'easeInOutSine',
       complete: () => {
-        anime.set('.logo, .nav', {
-          'pointer-events': 'auto',
-          opacity: ''
-        })
+        toggleNav()
       }
     })
     anime({

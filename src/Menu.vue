@@ -6,22 +6,10 @@
       <nav class="menu__nav">
         <ul>
           <li>
-            <router-link class="menu__link" to="/agency">Agency</router-link>
-          </li>
-          <li><router-link class="menu__link" to="/team">Team</router-link></li>
-          <li>
-            <router-link class="menu__link" to="/services"
-              >Services</router-link
-            >
+            <router-link class="menu__link" to="/">Index</router-link>
           </li>
           <li>
-            <router-link class="menu__link" to="/cases">Cases</router-link>
-          </li>
-          <li><router-link class="menu__link" to="/blog">Blog</router-link></li>
-          <li>
-            <router-link class="menu__link" to="/contacts"
-              >Contacts</router-link
-            >
+            <router-link class="menu__link" to="/about">About</router-link>
           </li>
         </ul>
       </nav>
@@ -118,6 +106,9 @@ export default {
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
 
+  @media (min-width: 501px)
+    display: none
+
 
 
 // Overlay
@@ -142,7 +133,13 @@ export default {
   @media (max-width: 500px)
     right: var(--unit-h)
 
+  li:not(:last-child)
+    margin-bottom: 4px
+
 .menu__link
+  line-height: 1
+  font-size: 48px
+  color: #fff !important
   transition: 0.25s ease
 
 .menu__nav .menu__link:not(.router-link-exact-active)
@@ -154,10 +151,10 @@ export default {
 .menu__nav:hover
   .menu__link:not(.router-link-exact-active),
   .menu__link.router-link-exact-active
-    opacity: 1
+    opacity: 0.3
 
 .menu__nav
   .menu__link:not(.router-link-exact-active):hover,
   .menu__link.router-link-exact-active:hover
-    opacity: 0.3
+    opacity: 1
 </style>
