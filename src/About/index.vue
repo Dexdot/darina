@@ -147,8 +147,8 @@ export default {
 
       this.splitted = true
 
+      this.observeTitle()
       this.observe()
-      // window.anime = anime
     },
     unsplit() {
       this.splits.forEach(split => {
@@ -156,7 +156,7 @@ export default {
       })
       this.splitted = false
     },
-    observe() {
+    observeTitle() {
       const { title } = this.$refs
 
       const observer = new IntersectionObserver(entries => {
@@ -175,6 +175,22 @@ export default {
       })
 
       observer.observe(title)
+    },
+    observe() {
+      const elements = [
+        this.$el.querySelector('.about__info'),
+        ...this.$el.querySelector('.about__text').children
+      ]
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible')
+        })
+      })
+
+      elements.forEach(el => {
+        observer.observe(el)
+      })
     }
   },
   async mounted() {
@@ -294,4 +310,24 @@ export default {
 
   @media (max-width: 500px)
     margin-left: 0
+
+// Animation
+.about__text > *
+  opacity: 0
+  transition: opacity .9s cubic-bezier(.215,.61,.355,1)
+
+  &.visible
+    opacity: 1
+
+.about__info li
+  opacity: 0
+  transform: translateY(16px)
+
+.about__info.visible li
+  opacity: 1
+  transform: translateY(0px)
+
+@for $i from 1 through 7
+  .about__info li:nth-child(#{$i})
+    transition: 0.4s ease (#{$i*0.075s})
 </style>
