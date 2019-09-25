@@ -13,6 +13,14 @@
           </li>
         </ul>
       </nav>
+
+      <a
+        href="https://instagram.com/darisha_"
+        class="menu__inst"
+        target="_blank"
+      >
+        <img :src="require('./assets/instagram.svg')" alt="Instagram" />
+      </a>
     </section>
   </transition>
 </template>
@@ -95,7 +103,7 @@ export default {
     transition: 0.4s ease (#{$i*0.05s})
 
 .menu
-  z-index: 1
+  z-index: 2
   position: fixed
   top: 0
   left: 0
@@ -142,11 +150,20 @@ export default {
   color: #fff !important
   transition: 0.25s ease
 
-.menu__nav .menu__link:not(.router-link-exact-active)
-  opacity: 0.3
+.menu__inst
+  position: fixed
+  bottom: var(--unit-v)
+  right: var(--unit-h)
 
-.menu__nav .menu__link.router-link-exact-active
-  opacity: 1
+  opacity: 0.3
+  &:hover
+    opacity: 1
+
+// .menu__nav .menu__link:not(.router-link-exact-active)
+//   opacity: 0.3
+
+// .menu__nav .menu__link.router-link-exact-active
+//   opacity: 1
 
 .menu__nav:hover
   .menu__link:not(.router-link-exact-active),

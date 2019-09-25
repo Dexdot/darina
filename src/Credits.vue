@@ -7,31 +7,43 @@
         <ul>
           <li>
             <a href="http://nickadams.now.sh" target="_blank">
-              <span>Design</span>
+              <img :src="require('./assets/design.svg')" alt="Design" />
               <p>Nick Adams</p>
             </a>
           </li>
           <li>
             <a href="http://hvxzcb.ru" target="_blank">
-              <span>Development</span>
+              <img
+                :src="require('./assets/development.svg')"
+                alt="Development"
+              />
               <p>Kamil Sometimes</p>
             </a>
           </li>
           <li>
             <button @click="$emit('credits-close')">
-              <span>Management</span>
+              <img :src="require('./assets/management.svg')" alt="Management" />
               <p>Darina Yurina</p>
             </button>
           </li>
         </ul>
       </nav>
+
+      <div class="credits__close">
+        <MenuButton active @click="$emit('credits-close')" />
+      </div>
     </section>
   </transition>
 </template>
 
 <script>
+import MenuButton from '@/MenuButton'
+
 export default {
   name: 'Credits',
+  components: {
+    MenuButton
+  },
   props: {
     active: {
       type: Boolean,
@@ -107,7 +119,7 @@ export default {
     transition: 0.4s ease (#{$i*0.05s})
 
 .credits
-  z-index: 1
+  z-index: 3
   position: fixed
   top: 0
   left: 0
@@ -140,9 +152,11 @@ export default {
 
   width: 100%
 
-.credits__nav span
+.credits__nav img
   display: block
-  margin-bottom: 4px
+  height: 16px
+  margin-left: auto
+  margin-right: auto
 
 .credits__nav p
   +eng(b)
@@ -162,6 +176,11 @@ export default {
     &:active,
     &:focus
       color: #fff !important
+
+.credits__close
+  position: fixed
+  bottom: var(--unit-v)
+  right: var(--unit-h)
 
 // HOVER
 .credits__nav

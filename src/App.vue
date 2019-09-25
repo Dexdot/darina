@@ -12,18 +12,11 @@
       >Darina Yurina</router-link
     >
 
-    <button
-      :class="[
-        'menu-btn',
-        { active: isMenuActive || isCreditsActive, hidden: !isNotScrolling }
-      ]"
+    <MenuButton
+      :active="isMenuActive"
+      :hidden="!isNotScrolling"
       @click="toggleMenu"
-    >
-      <span class="menu-btn__circle"></span>
-      <span class="menu-btn__circle"></span>
-      <span class="menu-btn__circle"></span>
-      <span class="menu-btn__circle"></span>
-    </button>
+    />
 
     <nav :class="['nav', { hidden: !isNotScrolling }]">
       <ul class="u-flex">
@@ -52,7 +45,7 @@
             :isNotScrolling="isNotScrolling"
             @case-mouseover="onCaseMouseover"
             @case-mouseout="onCaseMouseout"
-            @credits-click="toggleCredits(true)"
+            @credits-click="toggleCredits($event)"
           />
         </transition>
       </main>
@@ -66,6 +59,7 @@ import VirtualScroll from 'virtual-scroll'
 
 import Menu from '@/Menu'
 import Credits from '@/Credits'
+import MenuButton from '@/MenuButton'
 
 import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
@@ -91,7 +85,8 @@ export default {
   name: 'App',
   components: {
     Menu,
-    Credits
+    Credits,
+    MenuButton
   },
   data: () => ({
     colorIndex: 0,
@@ -163,14 +158,14 @@ export default {
       this.winHeight = window.innerHeight
     },
     toggleMenu() {
-      // this.isMenuActive = !this.isMenuActive
-      if (this.isCreditsActive) {
-        // Credits close
-        this.isCreditsActive = false
-      } else {
-        // Menu toggle
-        this.isMenuActive = !this.isMenuActive
-      }
+      this.isMenuActive = !this.isMenuActive
+      // if (this.isCreditsActive) {
+      //   // Credits close
+      //   this.isCreditsActive = false
+      // } else {
+      //   // Menu toggle
+      //   this.isMenuActive = !this.isMenuActive
+      // }
     },
     toggleCredits(show) {
       this.isCreditsActive = show
@@ -320,6 +315,17 @@ body.is-macos:not(.is-safari)
     opacity: 0
     pointer-events: none
 
+#app .menu-btn
+  z-index: 3
+  position: fixed
+  top: var(--unit-v)
+  right: var(--unit-h)
+
+  display: none
+
+  @media (max-width: 500px)
+    display: flex
+
 .app--fullscreen
   color: #fff
 
@@ -337,45 +343,6 @@ body.is-macos:not(.is-safari)
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
-
-.menu-btn
-  z-index: 2
-  position: fixed
-  top: var(--unit-v)
-  right: var(--unit-h)
-
-  display: none
-  flex-wrap: wrap
-  width: 24px
-  height: 24px
-  margin-left: -4px
-  margin-top: -4px
-  transition: transform 0.25s ease-in-out, opacity 0.25s ease
-  transform-origin: 50% 50%
-
-  @media (max-width: 500px)
-    display: flex
-
-.menu-btn:hover
-  opacity: 0.3
-
-.menu-btn.active
-  transform: rotate(45deg)
-
-.menu-btn__circle:nth-child(2)
-  margin-right: 30%
-
-.menu-btn:not(.active) .menu-btn__circle
-  background: var(--color-text)
-.menu-btn.active .menu-btn__circle
-  background: #fff
-
-.menu-btn__circle
-  border-radius: 50%
-  width: 4px
-  height: 4px
-  margin-left: 4px
-  margin-top: 4px
 
 .logo, .nav
   transition: opacity 0.25s ease

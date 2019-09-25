@@ -49,14 +49,27 @@
         <img class="case__img" :src="img.src" :alt="img.alt" />
       </div>
     </template>
+
+    <Next to="/about">
+      <template slot="title"
+        >About</template
+      >
+      <template slot="text"
+        >account & project management</template
+      >
+    </Next>
   </section>
 </template>
 
 <script>
 import { getCases } from '@/scripts/api'
+import Next from '@/Next'
 
 export default {
   name: 'Main',
+  components: {
+    Next
+  },
   props: { scroll: { type: Number, default: 0 } },
   data: () => ({
     titleIndex: -1,
@@ -153,6 +166,11 @@ export default {
   @media (max-width: 700px)
     padding-top: 176px
     padding-bottom: 120px
+  @media (max-width: 500px)
+    padding-bottom: 0
+
+.cases .next
+  margin-left: calc(var(--unit-h) * -1)
 
 .cases-list
   display: flex
@@ -220,6 +238,8 @@ export default {
     z-index: 1
     content: ''
     background: rgba(#000, 0.2)
+    @media (max-width: 500px)
+      display: none
 
   &::before,
   .case__img

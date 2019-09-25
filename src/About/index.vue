@@ -103,15 +103,25 @@
           </svg>
         </div>
       </div>
-      <button class="credits-button" @click="$emit('credits-click')">
+
+      <button class="credits-button" @click="$emit('credits-click', true)">
         Credits
       </button>
     </div>
+    <Next to="/">
+      <template slot="title"
+        >Index</template
+      >
+      <template slot="text"
+        >2017-2019</template
+      >
+    </Next>
   </article>
 </template>
 
 <script>
 import anime from 'animejs'
+import Next from '@/Next'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { fetchAbout } from '@/scripts/api'
@@ -125,6 +135,9 @@ const wrap = (el, wrapper) => {
 
 export default {
   name: 'About',
+  components: {
+    Next
+  },
   data: () => ({
     content: null,
     splits: [],
