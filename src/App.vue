@@ -8,7 +8,10 @@
     }"
     @click="onAppClick"
   >
-    <router-link :class="['logo', { hidden: !isNotScrolling }]" to="/"
+    <router-link
+      ref="logo"
+      :class="['logo', { hidden: !isNotScrolling }]"
+      to="/"
       >Darina Yurina</router-link
     >
 
@@ -31,6 +34,7 @@
 
     <Menu :active="isMenuActive" />
     <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
+    <Intro ref="intro" v-if="!visited" @complete="onIntroComplete" />
 
     <div class="scroll-container" ref="container">
       <main
@@ -55,8 +59,9 @@
 
 <script>
 import VirtualScroll from 'virtual-scroll'
-// import inobounce from 'inobounce'
+import anime from 'animejs'
 
+import Intro from '@/Intro'
 import Menu from '@/Menu'
 import Credits from '@/Credits'
 import MenuButton from '@/MenuButton'
@@ -84,6 +89,7 @@ const detectDevices = () => {
 export default {
   name: 'App',
   components: {
+    Intro,
     Menu,
     Credits,
     MenuButton
@@ -91,6 +97,7 @@ export default {
   data: () => ({
     colorIndex: 0,
     colors: [{ bg: 'EEE0D5', text: '1F2020' }],
+    visited: false,
     isMenuActive: false,
     isCreditsActive: false,
     caseHovered: false,
@@ -109,6 +116,11 @@ export default {
     }
   },
   async created() {
+    this.visited = localStorage.visited
+    if (!localStorage.visited) {
+      localStorage.visited = true
+    }
+
     this.setColors(await fetchPalette())
   },
   mounted() {
@@ -136,9 +148,6 @@ export default {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
     }
-
-    // Start Inobounce
-    // inobounce.enable()
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
@@ -244,6 +253,76 @@ export default {
     onCaseMouseout() {
       this.caseHovered = false
       this.caseFullscreen = false
+    },
+    // onIntroComplete() {
+    //   window.anime = anime
+    // },
+    onIntroComplete() {
+      const logo = this.$refs.logo.$el
+      const intro = this.$refs.intro.$el
+      const logoStyle = getComputedStyle(logo)
+
+      const x =
+        window.innerWidth / 2 -
+        logo.offsetWidth / 2 -
+        +logoStyle.left.split('px')[0]
+
+      const y =
+        window.innerHeight / 2 -
+        logo.offsetHeight / 2 -
+        +logoStyle.top.split('px')[0]
+
+      const tl = anime.timeline({
+        begin: () => {
+          console.log('tl begin')
+          anime.set(logo, {
+            color: '#fff',
+            zIndex: 4,
+            transition: 'unset',
+            opacity: 0,
+            willChange: 'transform'
+          })
+        },
+        complete: () => {
+          anime.set(logo, { color: '', zIndex: 2, transition: '', opacity: '' })
+          console.log('tl complete')
+        }
+      })
+
+      anime.set(logo, { translateX: `${x}px`, translateY: `${y}px` })
+      const easing = 'easeInOutQuart'
+
+      tl.add({
+        targets: logo,
+        opacity: [0, 1],
+        easing,
+        duration: 150
+      })
+        .add({
+          targets: logo,
+          translateY: [`${y}px`, '0px'],
+          easing,
+          duration: 800
+        })
+        .add(
+          {
+            targets: logo,
+            translateX: [`${x}px`, '0px'],
+            easing,
+            duration: 800
+          },
+          '-=100'
+        )
+        .add(
+          {
+            targets: intro,
+            opacity: [1, 0],
+            pointerEvents: 'none',
+            easing,
+            duration: 800
+          },
+          '-=100'
+        )
     },
     async enter(el, done) {
       // const transitionEnter =
