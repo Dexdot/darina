@@ -42,7 +42,13 @@
         ref="inner"
         :style="{ transform: `translate3d(0, -${this.translate}px, 0)` }"
       >
-        <transition @enter="enter" @leave="leave" :css="false" mode="out-in">
+        <transition
+          v-if="visited || introCompleted"
+          @enter="enter"
+          @leave="leave"
+          :css="false"
+          mode="out-in"
+        >
           <router-view
             :key="$route.path"
             :scroll="getTranslate()"
@@ -98,6 +104,7 @@ export default {
     colorIndex: 0,
     colors: [{ bg: 'EEE0D5', text: '1F2020' }],
     visited: false,
+    introCompleted: false,
     isMenuActive: false,
     isCreditsActive: false,
     caseHovered: false,
@@ -258,71 +265,17 @@ export default {
     //   window.anime = anime
     // },
     onIntroComplete() {
-      const logo = this.$refs.logo.$el
-      const intro = this.$refs.intro.$el
-      const logoStyle = getComputedStyle(logo)
-
-      const x =
-        window.innerWidth / 2 -
-        logo.offsetWidth / 2 -
-        +logoStyle.left.split('px')[0]
-
-      const y =
-        window.innerHeight / 2 -
-        logo.offsetHeight / 2 -
-        +logoStyle.top.split('px')[0]
-
-      const tl = anime.timeline({
-        begin: () => {
-          console.log('tl begin')
-          anime.set(logo, {
-            color: '#fff',
-            zIndex: 4,
-            transition: 'unset',
-            opacity: 0,
-            willChange: 'transform'
-          })
-        },
+      anime({
+        targets: this.$refs.intro.$el,
+        opacity: [1, 0],
+        scale: [1, 1.1],
+        zIndex: -1,
+        easing: 'easeInOutCirc',
+        duration: 600,
         complete: () => {
-          anime.set(logo, { color: '', zIndex: 2, transition: '', opacity: '' })
-          console.log('tl complete')
+          this.introCompleted = true
         }
       })
-
-      anime.set(logo, { translateX: `${x}px`, translateY: `${y}px` })
-      const easing = 'easeInOutQuart'
-
-      tl.add({
-        targets: logo,
-        opacity: [0, 1],
-        easing,
-        duration: 150
-      })
-        .add({
-          targets: logo,
-          translateY: [`${y}px`, '0px'],
-          easing,
-          duration: 800
-        })
-        .add(
-          {
-            targets: logo,
-            translateX: [`${x}px`, '0px'],
-            easing,
-            duration: 800
-          },
-          '-=100'
-        )
-        .add(
-          {
-            targets: intro,
-            opacity: [1, 0],
-            pointerEvents: 'none',
-            easing,
-            duration: 800
-          },
-          '-=100'
-        )
     },
     async enter(el, done) {
       // const transitionEnter =

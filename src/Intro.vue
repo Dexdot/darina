@@ -8,6 +8,7 @@
         role="presentation"
       />
     </li>
+    <li class="intro__logo">Darina Yurina</li>
   </ul>
 </template>
 
@@ -28,7 +29,7 @@ export default {
       this.interval = setInterval(() => {
         if (this.index === this.slides.length - 1) {
           clearInterval(this.interval)
-          this.index = 0
+          // this.index = 0
           this.$emit('complete')
         } else {
           this.index = this.index + 1
@@ -40,6 +41,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "~@/sass/utils"
+
 .intro
   z-index: 3
   position: fixed
@@ -49,6 +52,8 @@ export default {
   width: 100vw
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
+  pointer-events: none
+  user-select: none
 
 .intro__img
   z-index: 1
@@ -60,4 +65,17 @@ export default {
   height: 100%
 
   object-fit: cover
+
+.intro__logo
+  +eng(b)
+  font-size: 16px
+  text-transform: uppercase
+  letter-spacing: 0.24em
+
+  z-index: 1
+  position: absolute
+  top: 50vh
+  left: 50vw
+  transform: translate(-50%, -50%)
+  color: #fff !important
 </style>
