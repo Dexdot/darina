@@ -110,6 +110,8 @@ import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { mapGetters } from 'vuex'
 
+import { toggleNav } from '@/transitions/Stories'
+
 export default {
   name: 'Stories',
   components: {
@@ -176,6 +178,10 @@ export default {
   mounted() {
     this.mounted = true
     this.$emit('case-mouseout')
+
+    if (!this.$parent.visited) {
+      toggleNav(false)
+    }
   },
   beforeDestroy() {
     this.$refs.swiper.swiper.destroy(true, false)

@@ -51,12 +51,8 @@
     </template>
 
     <Next to="/about">
-      <template slot="title"
-        >About</template
-      >
-      <template slot="text"
-        >account & project management</template
-      >
+      <span slot="title">About</span>
+      <span slot="text">account & project management</span>
     </Next>
   </section>
 </template>
@@ -203,7 +199,7 @@ export default {
   @media (max-width: 500px)
     opacity: 0.35
 
-.case.active .case__sup
+.case:hover .case__sup
   opacity: 1
 
   @media (max-width: 500px)
@@ -322,6 +318,7 @@ export default {
 .case
   transform: translate3d(0, 200%, 0)
   transition: transform 1.4s cubic-bezier(.25,.75,.34,.98), opacity 0.25s ease
-.cases-li.visible .case
-  transform: translate3d(0, 0%, 0)
+.cases-li.visible
+  .case
+    transform: translate3d(0, 0%, 0)
 </style>

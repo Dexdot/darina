@@ -60,7 +60,8 @@ export default {
 .credits-enter
   pointer-events: none
 
-  nav li
+  nav li,
+  .credits__close
     opacity: 0
     transform: translateY(16px)
 
@@ -72,6 +73,7 @@ export default {
   pointer-events: auto
 
   .credits__overlay,
+  .credits__close,
   nav li
     opacity: 1
     transform: translateY(0%)
@@ -82,6 +84,9 @@ export default {
 
   .credits__overlay
     transition: 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)
+
+  .credits__close
+    transition: 0.4s ease
 
 @for $i from 1 through 3
   .credits-enter-active .credits__nav li:nth-child(#{$i})
@@ -96,13 +101,15 @@ export default {
     opacity: 1
 
   .credits__overlay,
+  .credits__close,
   nav li
     transform: translateY(0%)
 
 .credits-leave-to
   pointer-events: none
 
-  nav li
+  nav li,
+  .credits__close
     opacity: 0
 
   .credits__overlay
@@ -110,6 +117,9 @@ export default {
 
 .credits-leave-active
   transition: 1s ease-in-out
+
+  .credits__close
+    transition: 0.4s ease
 
   .credits__overlay
     transition: 0.8s cubic-bezier(0.645, 0.045, 0.355, 1)

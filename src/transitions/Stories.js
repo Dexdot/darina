@@ -1,6 +1,6 @@
 import anime from 'animejs'
 
-const toggleNav = (show = true) => {
+export const toggleNav = (show = true) => {
   document.querySelectorAll('.logo, .nav, .menu-btn').forEach(el => {
     if (show) {
       el.classList.remove('hidden')
