@@ -52,6 +52,7 @@
           <router-view
             :key="$route.path"
             :scroll="getTranslate()"
+            :aboutTranslate="aboutTranslate"
             :isNotScrolling="isNotScrolling"
             @case-mouseover="onCaseMouseover"
             @case-mouseout="onCaseMouseout"
@@ -75,11 +76,10 @@ import MenuButton from '@/MenuButton'
 import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
 import { isSafari, isMACOS, isMobileDevice } from '@/scripts/detect'
+import { roundDec, lerp } from '@/scripts/math'
 
 import transitions from '@/transitions/'
 
-const roundDec = n => Math.round(n * 100) / 100
-const lerp = (a, b, n) => (1 - n) * a + n * b
 const detectDevices = () => {
   if (isMACOS()) {
     document.querySelector('body').classList.add('is-macos')
@@ -91,6 +91,8 @@ const detectDevices = () => {
     document.querySelector('body').classList.add('is-mob')
   }
 }
+
+let interval
 
 export default {
   name: 'App',
@@ -110,6 +112,8 @@ export default {
     caseHovered: false,
     caseFullscreen: false,
     isNotScrolling: true,
+    aboutScroll: 0,
+    aboutTranslate: 0,
     scroll: 0,
     translate: 0,
     deltaY: 0,
@@ -154,16 +158,20 @@ export default {
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
+      loop.add(this.aboutSmooth.bind(this), 'aboutSmooth')
+      interval = setInterval(this.aboutHandler.bind(this), 35)
     }
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
+    window.clearInterval(interval)
 
     if (isSafari() || isMobileDevice()) {
       window.removeEventListener('scroll', this.defaultScroll.bind(this))
     } else {
       this.vs.off(this.onScroll)
       loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
+      loop.remove(this.aboutSmooth.bind(this), 'aboutSmooth')
     }
   },
   methods: {
@@ -175,27 +183,37 @@ export default {
     },
     toggleMenu() {
       this.isMenuActive = !this.isMenuActive
-      // if (this.isCreditsActive) {
-      //   // Credits close
-      //   this.isCreditsActive = false
-      // } else {
-      //   // Menu toggle
-      //   this.isMenuActive = !this.isMenuActive
-      // }
     },
     toggleCredits(show) {
       this.isCreditsActive = show
+    },
+    aboutHandler() {
+      if (this.isNotScrolling) {
+        this.onAboutScroll()
+      }
+    },
+    onAboutScroll(deltaY = -1) {
+      const aboutScroll = this.aboutScroll + -1 * deltaY
+
+      this.aboutScroll = Math.min(
+        Math.max(aboutScroll, 0),
+        window.innerHeight * 0.52 + 156
+      )
     },
     onScroll({ deltaY }) {
       if (!this.isMenuActive && !this.isCreditsActive)
         this.isNotScrolling = false
 
       this.deltaY = deltaY
+      this.onAboutScroll(deltaY)
       const scroll = this.scroll + -1 * deltaY
 
       this.scroll = Math.min(
         Math.max(scroll, 0),
-        this.$refs.inner.getBoundingClientRect().height - this.winHeight
+        // this.$refs.inner.getBoundingClientRect().height - this.winHeight
+        this.$refs.inner.getBoundingClientRect().height -
+          this.winHeight -
+          this.aboutScroll / 2
       )
     },
     checkSmooth() {
@@ -219,6 +237,26 @@ export default {
           roundTranslate <= roundScroll + 50
         ) {
           this.isNotScrolling = true
+        }
+      }
+    },
+    aboutSmooth() {
+      const roundTranslate = Math.round(this.aboutTranslate)
+      const roundScroll = Math.round(this.aboutScroll)
+
+      if (roundScroll !== roundTranslate) {
+        this.aboutTranslate = roundDec(
+          lerp(this.aboutTranslate, this.aboutScroll, 0.01)
+        )
+
+        // Round scroll (chrome transform bluring)
+        if (
+          roundTranslate >= roundScroll - 1 &&
+          roundTranslate <= roundScroll + 1
+        ) {
+          this.aboutTranslate = Math.round(
+            lerp(this.aboutTranslate, this.aboutScroll, 0.01)
+          )
         }
       }
     },
@@ -261,9 +299,6 @@ export default {
       this.caseHovered = false
       this.caseFullscreen = false
     },
-    // onIntroComplete() {
-    //   window.anime = anime
-    // },
     onIntroComplete() {
       anime({
         targets: this.$refs.intro.$el,

@@ -11,11 +11,6 @@
         </h1>
 
         <div class="about__content">
-          <!-- <img
-            class="about__img"
-            :src="content.image.fields.file.url"
-            :alt="content.image.fields.title"
-          /> -->
           <div class="about__scene" ref="scene">
             <img
               @load="onImageLoad"
@@ -53,7 +48,10 @@
             <li><a href="https://t.me/kapusha" target="_blank">Telegram</a></li>
           </ul>
 
-          <div class="about__text">
+          <div
+            class="about__text"
+            :style="{ transform: `translate3d(0, -${aboutTranslate}px, 0)` }"
+          >
             <p
               v-for="(p, i) in content.text.content"
               :key="i"
@@ -114,7 +112,13 @@
           </div>
         </div>
 
-        <button class="credits-button" @click="$emit('credits-click', true)">
+        <button
+          class="credits-button"
+          @click="$emit('credits-click', true)"
+          :style="{
+            transform: `translate3d(0, -${aboutTranslate / 2 + 2}px, 0)`
+          }"
+        >
           Credits
         </button>
       </template>
@@ -146,6 +150,7 @@ export default {
   components: {
     Next
   },
+  props: ['aboutTranslate'],
   data: () => ({
     content: null,
     splits: [],
@@ -277,6 +282,8 @@ export default {
     white-space: pre-wrap
     overflow: hidden
     display: inline-block !important
+    padding: 0.105em 0
+    margin-top: -0.2105em
 
   & > span
     display: block
@@ -285,6 +292,8 @@ export default {
     text-indent: 2.7em
 
   &.js-splitted
+    padding-top: 0.105em
+
     /deep/ .title-line
       will-change: transform
       transform: translateY(150%)
@@ -293,7 +302,6 @@ export default {
       text-indent: 2.7em
 
 .about__scene
-  // height: 782px
   width: column-spans(6)
   float: left
   position: relative
@@ -317,19 +325,6 @@ export default {
     top: 0
     left: 0
 
-
-// .about__img
-//   display: block
-//   height: auto
-//   width: column-spans(6)
-//   float: left
-
-//   @media (max-width: 1000px)
-//     float: unset
-//     margin-left: auto
-//     margin-bottom: 32px
-//     width: calc(100vw - var(--unit-h))
-
 .about__email
   margin-top: 2em
   @media (max-width: 500px)
@@ -342,7 +337,7 @@ export default {
   letter-spacing: 0.08em
   text-transform: uppercase
 
-  margin-bottom: 52vh
+  padding-bottom: 52vh
   margin-left: auto
   width: column-spans(2)
 
@@ -353,11 +348,11 @@ export default {
     font-size: 14px
 
   @media (max-width: 1300px) and (min-height: 1000px)
-    margin-bottom: 200px
+    padding-bottom: 200px
 
   @media (max-width: 1000px)
     margin-left: 0
-    margin-bottom: 80px
+    padding-bottom: 80px
     font-size: 16px
 
   b
@@ -370,8 +365,12 @@ export default {
     margin-bottom: 2.2em
 
   @media (max-width: 1000px)
+    transform: unset !important
     margin: 0
     width: 100%
+
+  @media (max-width: 500px)
+    font-size: 18px
 
 .credits-button
   +eng(b)
@@ -382,6 +381,9 @@ export default {
   display: block
   margin-left: auto
   +yo('margin-top', (375px: 160px, 1920px: 292px))
+
+  @media (max-width: 1000px)
+    transform: unset !important
 
   @media (max-width: 500px)
     margin-left: 0
