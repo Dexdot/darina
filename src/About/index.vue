@@ -48,10 +48,7 @@
             <li><a href="https://t.me/kapusha" target="_blank">Telegram</a></li>
           </ul>
 
-          <div
-            class="about__text"
-            :style="{ transform: `translate3d(0, -${aboutTranslate}px, 0)` }"
-          >
+          <div class="about__text">
             <p
               v-for="(p, i) in content.text.content"
               :key="i"
@@ -112,19 +109,13 @@
           </div>
         </div>
 
-        <button
-          class="credits-button"
-          @click="$emit('credits-click', true)"
-          :style="{
-            transform: `translate3d(0, -${aboutTranslate / 2 + 2}px, 0)`
-          }"
-        >
+        <button class="credits-button" @click="$emit('credits-click', true)">
           Credits
         </button>
       </template>
     </div>
     <Next to="/">
-      <span slot="title">Index</span>
+      <span slot="title">Cases</span>
       <span slot="text">2017-2019</span>
     </Next>
   </article>
@@ -150,7 +141,6 @@ export default {
   components: {
     Next
   },
-  props: ['aboutTranslate'],
   data: () => ({
     content: null,
     splits: [],
@@ -365,7 +355,6 @@ export default {
     margin-bottom: 2.2em
 
   @media (max-width: 1000px)
-    transform: unset !important
     margin: 0
     width: 100%
 
@@ -381,9 +370,6 @@ export default {
   display: block
   margin-left: auto
   +yo('margin-top', (375px: 160px, 1920px: 292px))
-
-  @media (max-width: 1000px)
-    transform: unset !important
 
   @media (max-width: 500px)
     margin-left: 0

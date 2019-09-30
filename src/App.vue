@@ -32,7 +32,7 @@
       </ul>
     </nav>
 
-    <Menu :active="isMenuActive" />
+    <Menu :active="isMenuActive" @click="isMenuActive = false" />
     <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
     <Intro ref="intro" v-if="!visited" @complete="onIntroComplete" />
 
@@ -52,7 +52,6 @@
           <router-view
             :key="$route.path"
             :scroll="getTranslate()"
-            :aboutTranslate="aboutTranslate"
             :isNotScrolling="isNotScrolling"
             @case-mouseover="onCaseMouseover"
             @case-mouseout="onCaseMouseout"
@@ -76,7 +75,7 @@ import MenuButton from '@/MenuButton'
 import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
 import { isSafari, isMACOS, isMobileDevice } from '@/scripts/detect'
-import { roundDec, lerp } from '@/scripts/math'
+import { roundDec, lerp, mapColors } from '@/scripts/helpers'
 
 import transitions from '@/transitions/'
 
@@ -91,8 +90,6 @@ const detectDevices = () => {
     document.querySelector('body').classList.add('is-mob')
   }
 }
-
-let interval
 
 export default {
   name: 'App',
@@ -123,7 +120,21 @@ export default {
   }),
   computed: {
     activeColor() {
-      return this.colors[this.colorIndex]
+      if (this.$route.name === 'case') {
+        const { id } = this.$route.params
+
+        const project = this.$store.getters.cases.find(
+          v => v.fields.slug === id
+        )
+
+        if (!project) return this.colors[this.colorIndex]
+        const { palette } = project.fields
+        const [bg, text] = palette.split(' ')
+
+        return { bg, text }
+      } else {
+        return this.colors[this.colorIndex]
+      }
     }
   },
   async created() {
@@ -133,6 +144,7 @@ export default {
     }
 
     this.setColors(await fetchPalette())
+    this.colorIndex = Math.floor(Math.random() * this.colors.length)
   },
   mounted() {
     detectDevices()
@@ -158,20 +170,16 @@ export default {
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
-      loop.add(this.aboutSmooth.bind(this), 'aboutSmooth')
-      interval = setInterval(this.aboutHandler.bind(this), 35)
     }
   },
   destroyed() {
     window.removeEventListener('resize', this.getWinHeight.bind(this))
-    window.clearInterval(interval)
 
     if (isSafari() || isMobileDevice()) {
       window.removeEventListener('scroll', this.defaultScroll.bind(this))
     } else {
       this.vs.off(this.onScroll)
       loop.remove(this.checkSmooth.bind(this), 'checkSmooth')
-      loop.remove(this.aboutSmooth.bind(this), 'aboutSmooth')
     }
   },
   methods: {
@@ -187,33 +195,16 @@ export default {
     toggleCredits(show) {
       this.isCreditsActive = show
     },
-    aboutHandler() {
-      if (this.isNotScrolling) {
-        this.onAboutScroll()
-      }
-    },
-    onAboutScroll(deltaY = -1) {
-      const aboutScroll = this.aboutScroll + -1 * deltaY
-
-      this.aboutScroll = Math.min(
-        Math.max(aboutScroll, 0),
-        window.innerHeight * 0.52 + 156
-      )
-    },
     onScroll({ deltaY }) {
       if (!this.isMenuActive && !this.isCreditsActive)
         this.isNotScrolling = false
 
       this.deltaY = deltaY
-      this.onAboutScroll(deltaY)
       const scroll = this.scroll + -1 * deltaY
 
       this.scroll = Math.min(
         Math.max(scroll, 0),
-        // this.$refs.inner.getBoundingClientRect().height - this.winHeight
-        this.$refs.inner.getBoundingClientRect().height -
-          this.winHeight -
-          this.aboutScroll / 2
+        this.$refs.inner.getBoundingClientRect().height - this.winHeight
       )
     },
     checkSmooth() {
@@ -240,37 +231,12 @@ export default {
         }
       }
     },
-    aboutSmooth() {
-      const roundTranslate = Math.round(this.aboutTranslate)
-      const roundScroll = Math.round(this.aboutScroll)
-
-      if (roundScroll !== roundTranslate) {
-        this.aboutTranslate = roundDec(
-          lerp(this.aboutTranslate, this.aboutScroll, 0.01)
-        )
-
-        // Round scroll (chrome transform bluring)
-        if (
-          roundTranslate >= roundScroll - 1 &&
-          roundTranslate <= roundScroll + 1
-        ) {
-          this.aboutTranslate = Math.round(
-            lerp(this.aboutTranslate, this.aboutScroll, 0.01)
-          )
-        }
-      }
-    },
     defaultScroll({ deltaY }) {
       this.deltaY = deltaY
       this.scroll = window.pageYOffset
     },
     setColors(colors) {
-      this.colors = [
-        ...colors.map(pair => {
-          const [bg, text] = pair.split(' ')
-          return { bg, text }
-        })
-      ]
+      this.colors = mapColors(colors)
     },
     onAppClick({ target }) {
       const tag = target.tagName.toLowerCase()
@@ -280,6 +246,7 @@ export default {
       const classes = ['stories-link', 'swiper-', 'story-img', 'menu-btn']
 
       if (
+        this.$route.name === 'case' ||
         tags.indexOf(tag) !== -1 ||
         classes.some(cls => className.indexOf(cls) !== -1)
       )
@@ -313,9 +280,6 @@ export default {
       })
     },
     async enter(el, done) {
-      // const transitionEnter =
-      //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.to.name
-      // await transitions['main'].enter(el)
       const transitionEnter = this.dir.to.name
       await transitions[transitionEnter].enter(el)
 
@@ -324,9 +288,6 @@ export default {
     async leave(el, done) {
       if (this.isMenuActive) this.toggleMenu()
 
-      // const transitionLeave =
-      //   this.dir.from.name === this.dir.to.name ? 'cases' : this.dir.from.name
-      // await transitions['main'].leave(el)
       const transitionLeave = this.dir.from.name
       await transitions[transitionLeave].leave(el)
 

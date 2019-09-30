@@ -3,10 +3,10 @@
     <section class="menu" v-show="active">
       <div class="menu__overlay"></div>
 
-      <nav class="menu__nav">
+      <nav class="menu__nav" @click="$emit('click')">
         <ul>
           <li>
-            <router-link class="menu__link" to="/">Index</router-link>
+            <router-link class="menu__link" to="/">Cases</router-link>
           </li>
           <li>
             <router-link class="menu__link" to="/about">About</router-link>

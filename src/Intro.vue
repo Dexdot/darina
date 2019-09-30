@@ -1,10 +1,10 @@
 <template>
   <ul class="intro">
-    <li class="intro__li" v-for="(img, i) in slides" :key="img + i">
+    <li class="intro__li" v-for="i in slidesLength" :key="i">
       <img
         v-show="i === index"
         class="intro__img"
-        :src="require(`./assets/intro/${img}`)"
+        :src="require(`./assets/intro/${i}.jpg`)"
         role="presentation"
       />
     </li>
@@ -13,23 +13,26 @@
 </template>
 
 <script>
+import imagesLoaded from 'imagesloaded'
+
 export default {
   name: 'Intro',
   data: () => ({
-    slides: ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg'],
-    delay: 300,
+    slidesLength: 10,
+    delay: 280,
     index: 0,
     interval: null
   }),
   created() {
-    this.start()
+    imagesLoaded('.intro', () => {
+      this.start()
+    })
   },
   methods: {
     start() {
       this.interval = setInterval(() => {
-        if (this.index === this.slides.length - 1) {
+        if (this.index === this.slidesLength) {
           clearInterval(this.interval)
-          // this.index = 0
           this.$emit('complete')
         } else {
           this.index = this.index + 1

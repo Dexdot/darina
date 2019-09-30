@@ -162,6 +162,7 @@ export default {
   @media (max-width: 700px)
     padding-top: 176px
     padding-bottom: 120px
+
   @media (max-width: 500px)
     padding-bottom: 0
 
@@ -172,6 +173,9 @@ export default {
   display: flex
   flex-direction: column
   align-items: flex-end
+
+  @media (max-width: 500px)
+    padding-bottom: 120px
 
 .cases-li
   padding-top: 0.15em
