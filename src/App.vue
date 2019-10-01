@@ -10,18 +10,20 @@
   >
     <router-link
       ref="logo"
-      :class="['logo', { hidden: !isNotScrolling }]"
+      :class="['logo', { hidden: $route.name === 'case' || !isNotScrolling }]"
       to="/"
       >Darina Yurina</router-link
     >
 
     <MenuButton
       :active="isMenuActive"
-      :hidden="!isNotScrolling"
+      :hidden="$route.name === 'case' || !isNotScrolling"
       @click="toggleMenu"
     />
 
-    <nav :class="['nav', { hidden: !isNotScrolling }]">
+    <nav
+      :class="['nav', { hidden: $route.name === 'case' || !isNotScrolling }]"
+    >
       <ul class="u-flex">
         <li class="nav__li">
           <router-link class="nav__link" to="/">Cases</router-link>
@@ -166,7 +168,8 @@ export default {
 
     if (isSafari() || isMobileDevice()) {
       window.addEventListener('scroll', this.defaultScroll.bind(this))
-      this.isNotScrolling = true
+      this.checkScrollStop()
+      // this.isNotScrolling = true
     } else {
       this.vs.on(this.onScroll)
       loop.add(this.checkSmooth.bind(this), 'checkSmooth')
@@ -234,6 +237,16 @@ export default {
     defaultScroll({ deltaY }) {
       this.deltaY = deltaY
       this.scroll = window.pageYOffset
+    },
+    checkScrollStop() {
+      let timer
+      window.addEventListener('scroll', () => {
+        this.isNotScrolling = false
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+          this.isNotScrolling = true
+        }, 250)
+      })
     },
     setColors(colors) {
       this.colors = mapColors(colors)

@@ -197,6 +197,7 @@ export default {
       const elements = [
         this.$refs.scene,
         this.$el.querySelector('.about__info'),
+        this.$el.querySelector('.credits-button'),
         ...this.$el.querySelector('.about__text').children
       ]
 
@@ -229,7 +230,7 @@ export default {
         image1: this.content.image.fields.file.url,
         image2: this.content.image.fields.file.url,
         displacementImage: require('./displace.png'),
-        intensity: 0.0125,
+        intensity: window.innerWidth > 500 ? 0.0125 : 0.02,
         speedIn: 2,
         speedOut: 2
       })
@@ -375,6 +376,7 @@ export default {
     margin-left: 0
 
 // Animation
+.credits-button,
 .about__text > *
   opacity: 0
   transition: opacity .9s cubic-bezier(.215,.61,.355,1)

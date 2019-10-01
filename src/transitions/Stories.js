@@ -1,19 +1,17 @@
 import anime from 'animejs'
 
-export const toggleNav = (show = true) => {
-  document.querySelectorAll('.logo, .nav, .menu-btn').forEach(el => {
-    if (show) {
-      el.classList.remove('hidden')
-    } else {
-      el.classList.add('hidden')
-    }
-  })
-}
+// export const toggleNav = (show = true) => {
+//   document.querySelectorAll('.logo, .nav, .menu-btn').forEach(el => {
+//     if (show) {
+//       el.classList.remove('hidden')
+//     } else {
+//       el.classList.add('hidden')
+//     }
+//   })
+// }
 
 const enter = (el, cb) =>
   new Promise(resolve => {
-    toggleNav(false)
-
     // 250 = swiper-slide transition-dur (active slide scaled)
     anime({
       targets: el.querySelector('.stories-head'),
@@ -51,10 +49,7 @@ const leave = (el, cb) =>
       targets: el.querySelector('.stories-head'),
       opacity: [1, 0],
       duration: 400,
-      easing: 'easeInOutSine',
-      complete: () => {
-        toggleNav()
-      }
+      easing: 'easeInOutSine'
     })
     anime({
       targets: el.querySelectorAll('.story-img'),

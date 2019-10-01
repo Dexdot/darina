@@ -109,9 +109,6 @@
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { mapGetters } from 'vuex'
-
-import { toggleNav } from '@/transitions/Stories'
-
 export default {
   name: 'Stories',
   components: {
@@ -178,10 +175,6 @@ export default {
   mounted() {
     this.mounted = true
     this.$emit('case-mouseout')
-
-    if (!this.$parent.visited) {
-      toggleNav(false)
-    }
   },
   beforeDestroy() {
     this.$refs.swiper.swiper.destroy(true, false)
@@ -349,14 +342,21 @@ export default {
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
       transform: translate(0, 0)
 
+    // @media (max-width: 500px)
+    //   transform: translate(0, 0)
+
   svg
     margin-top: 2px
 
   &--prev
     left: 0
     transform: translate(calc(-1 * var(--unit-h)), -50%)
+
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
       transform: translate(calc(-1 * var(--unit-h)), 0)
+
+    @media (max-width: 500px)
+      transform: translate(0, -50%)
 
     svg
       margin-right: 8px
@@ -369,15 +369,20 @@ export default {
 
       @media (max-width: 500px)
         margin: 0
+
     .stories-link__text
       @media (max-width: 500px)
-        transform: translateX(-16px)
+        transform: translateX(calc(-1 * var(--unit-h) - 4px))
 
   &--next
     right: 0
     transform: translate(var(--unit-h), -50%)
+
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
       transform: translate(var(--unit-h), 0)
+    
+    @media (max-width: 500px)
+      transform: translate(0, -50%)
 
     svg
       margin-left: 8px
@@ -389,9 +394,11 @@ export default {
 
       @media (max-width: 500px)
         margin: 0
+
     .stories-link__text
       @media (max-width: 500px)
-        transform: translateX(16px)
+        transform: translateX(calc(var(--unit-h) + 4px))
+
     .stories-link__inner
       flex-direction: row-reverse
 
