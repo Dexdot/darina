@@ -10,20 +10,18 @@
   >
     <router-link
       ref="logo"
-      :class="['logo', { hidden: $route.name === 'case' || !isNotScrolling }]"
+      :class="['logo', { hidden: $route.name === 'case' || hideNav }]"
       to="/"
       >Darina Yurina</router-link
     >
 
     <MenuButton
       :active="isMenuActive"
-      :hidden="$route.name === 'case' || !isNotScrolling"
+      :hidden="$route.name === 'case' || hideNav"
       @click="toggleMenu"
     />
 
-    <nav
-      :class="['nav', { hidden: $route.name === 'case' || !isNotScrolling }]"
-    >
+    <nav :class="['nav', { hidden: $route.name === 'case' || hideNav }]">
       <ul class="u-flex">
         <li class="nav__li">
           <router-link class="nav__link" to="/">Cases</router-link>
@@ -137,6 +135,9 @@ export default {
       } else {
         return this.colors[this.colorIndex]
       }
+    },
+    hideNav() {
+      return isSafari() || isMobileDevice() ? false : !this.isNotScrolling
     }
   },
   async created() {
@@ -366,6 +367,10 @@ body.is-macos:not(.is-safari)
 
   @media (max-width: 500px)
     display: flex
+
+.is-mob
+  .logo, #app .menu-btn:not(.active)
+    position: absolute
 
 .app--fullscreen
   color: #fff

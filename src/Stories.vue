@@ -281,6 +281,14 @@ export default {
       margin-left: 0.27vw
       margin-right: 0.27vw
 
+  &:first-child
+    @media (max-width: 500px)
+      margin-left: calc(var(--unit-h) * 2)
+
+  &:last-child
+    @media (max-width: 500px)
+      margin-right: calc(var(--unit-h) * 2)
+
 .swiper-slide:not(.swiper-slide-active)
   transform: scale(0.89)
   @media (max-width: 500px)
@@ -337,6 +345,9 @@ export default {
   &.nonclick
     pointer-events: none
 
+  @media (max-width: 500px)
+    top: 52%
+
   &:hover
     transform: translate(0, -50%)
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
@@ -380,7 +391,7 @@ export default {
 
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
       transform: translate(var(--unit-h), 0)
-    
+
     @media (max-width: 500px)
       transform: translate(0, -50%)
 
@@ -429,4 +440,7 @@ export default {
   background: var(--color-text)
   // background: #fff
   opacity: 0.3
+
+  @media (max-width: 500px)
+    height: 101.7vw
 </style>

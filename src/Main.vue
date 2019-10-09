@@ -46,11 +46,13 @@
         ]"
         :style="{ transform: `translate3d(0, ${scroll}px, 0)` }"
       >
-        <img class="case__img" :src="img.src" :alt="img.alt" />
+        <div class="u-ovh">
+          <img class="case__img" :src="img.src" :alt="img.alt" />
+        </div>
       </div>
     </template>
 
-    <Next to="/about">
+    <Next to="/about" right>
       <span slot="title">About</span>
       <span slot="text">account & project management</span>
     </Next>
@@ -183,6 +185,10 @@ export default {
   display: inline-flex
   text-align: right
 
+.is-mob .cases-li,
+.is-macos .cases-li
+  padding-top: 0.35em
+
 .case
   line-height: 1
   +yo('font-size', (320px: 40px, 375px: 48px, 1920px: 96px))
@@ -213,13 +219,21 @@ export default {
   z-index: -1
   position: fixed
 
+  // overflow: hidden
   transition: opacity 0.3s ease
   pointer-events: none
   opacity: 0
+
   &.visible
     opacity: 1
 
+    .case__img
+      transform: scale(1)
+
 .case__img
+  transition: transform 1.6s cubic-bezier(0.215, 0.61, 0.355, 1)
+  transform: scale(1.2)
+
   display: block
   max-width: 100%
   height: auto
@@ -233,6 +247,7 @@ export default {
 
   .case__img
     object-fit: cover
+    transform: scale(1.1)
 
   &::before
     z-index: 1
@@ -258,6 +273,7 @@ export default {
     top: 14.8vh
     top: calc(var(--vh, 1vh) * 14.8)
     left: 0
+
     .case__img
       width: calc(#{column-spans(5)} + #{var(--unit-h)})
 
@@ -265,13 +281,17 @@ export default {
     top: 50vh
     top: calc(var(--vh, 1vh) * 50)
     left: 50vw
+
     .case__img
       width: column-spans(6)
+
+    .u-ovh
       transform: translate(-50%, -50%)
 
   &.case__img--3
     top: 0
     left: calc(#{mix(2)} + #{var(--unit-h)})
+
     .case__img
       width: column-spans(5)
 
@@ -279,8 +299,11 @@ export default {
     top: 85.2vh
     top: calc(var(--vh, 1vh) * 85.2)
     left: calc(#{mix(1)} + #{var(--unit-h)})
+
     .case__img
       width: column-spans(5)
+
+    .u-ovh
       transform: translateY(-100%)
 
 
@@ -289,6 +312,7 @@ export default {
     top: 14.8vh
     top: calc(var(--vh, 1vh) * 14.8)
     left: calc(#{mix(1)} + #{var(--unit-h)})
+
     .case__img
       width: column-spans(5)
 
@@ -296,24 +320,33 @@ export default {
     top: 50vh
     top: calc(var(--vh, 1vh) * 50)
     left: 50vw
+
     .case__img
       width: gutter-spans(4)
+
+    .u-ovh
       transform: translate(-50%, -50%)
 
   &.case__img--3
     top: 100vh
     top: calc(var(--vh, 1vh) * 100)
     left: 50vw
+
     .case__img
       width: column-spans(5)
+
+    .u-ovh
       transform: translate(-50%, -100%)
 
   &.case__img--4
     top: 50vh
     top: calc(var(--vh, 1vh) * 50)
     left: 0
+
     .case__img
       width: column-spans(6)
+
+    .u-ovh
       transform: translate(0, -50%)
 
 // ANIMATION

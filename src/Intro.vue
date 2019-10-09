@@ -1,10 +1,10 @@
 <template>
   <ul class="intro">
-    <li class="intro__li" v-for="i in slidesLength" :key="i">
+    <li class="intro__li" v-for="(slide, i) in slides" :key="slide">
       <img
         v-show="i === index"
         class="intro__img"
-        :src="require(`./assets/intro/${i}.jpg`)"
+        :src="require(`./assets/intro/${slide}.jpg`)"
         role="presentation"
       />
     </li>
@@ -15,10 +15,14 @@
 <script>
 import imagesLoaded from 'imagesloaded'
 
+const desktop = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+const mob = ['1', '2', '5', '6', '7', '8', '9', '10']
+const slides = window.innerWidth > 500 ? desktop : mob
+
 export default {
   name: 'Intro',
   data: () => ({
-    slidesLength: 10,
+    slides,
     delay: 280,
     index: 0,
     interval: null
@@ -31,7 +35,7 @@ export default {
   methods: {
     start() {
       this.interval = setInterval(() => {
-        if (this.index === this.slidesLength) {
+        if (this.index === this.slides.length - 1) {
           clearInterval(this.interval)
           this.$emit('complete')
         } else {

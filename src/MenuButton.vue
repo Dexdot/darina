@@ -33,6 +33,9 @@ export default {
 .menu-btn:hover
   opacity: 0.3
 
+  @media (max-width: 500px)
+    opacity: 1
+
 .menu-btn.active
   transform: rotate(45deg)
 
