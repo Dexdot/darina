@@ -36,6 +36,16 @@
     <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
     <Intro ref="intro" v-if="!visited" @complete="onIntroComplete" />
 
+    <Next v-if="nextName === 'about'" to="/">
+      <span slot="title">Cases</span>
+      <span slot="text">2017-2019</span>
+    </Next>
+
+    <Next v-if="nextName === 'main'" to="/about" right>
+      <span slot="title">About</span>
+      <span slot="text">account & project management</span>
+    </Next>
+
     <div class="scroll-container" ref="container">
       <main
         class="scroll-inner"
@@ -71,6 +81,7 @@ import Intro from '@/Intro'
 import Menu from '@/Menu'
 import Credits from '@/Credits'
 import MenuButton from '@/MenuButton'
+import Next from '@/Next'
 
 import loop from '@/scripts/loop'
 import { fetchPalette } from '@/scripts/api'
@@ -97,7 +108,8 @@ export default {
     Intro,
     Menu,
     Credits,
-    MenuButton
+    MenuButton,
+    Next
   },
   data: () => ({
     colorIndex: 0,
@@ -116,7 +128,8 @@ export default {
     deltaY: 0,
     vs: null,
     winHeight: 0,
-    dir: {}
+    dir: {},
+    nextName: ''
   }),
   computed: {
     activeColor() {
@@ -305,6 +318,7 @@ export default {
       const transitionLeave = this.dir.from.name
       await transitions[transitionLeave].leave(el)
 
+      this.nextName = this.dir.to.name
       this.scroll = 0
       this.translate = 0
       window.scrollTo(0, 0)
@@ -314,6 +328,7 @@ export default {
   },
   watch: {
     $route(to, from) {
+      if (this.nextName === '') this.nextName = this.$route.name
       this.dir = { to, from }
     }
   }
@@ -347,6 +362,9 @@ body.is-macos:not(.is-safari)
     &:active,
     &:focus
       color: var(--color-text)
+
+  @media (max-width: 500px)
+    padding-bottom: 200px
 
 .app--faded
   .logo, .nav, .menu-btn
@@ -384,11 +402,14 @@ body.is-macos:not(.is-safari)
 
 .scroll-container
   width: 100vw
-
-.scroll-container
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden
+
+  @media (max-width: 500px)
+    background: var(--color-bg)
+    position: relative
+    z-index: 1
 
 .logo, .nav
   transition: opacity 0.25s ease

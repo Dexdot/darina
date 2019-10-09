@@ -114,16 +114,11 @@
         </button>
       </template>
     </div>
-    <Next to="/">
-      <span slot="title">Cases</span>
-      <span slot="text">2017-2019</span>
-    </Next>
   </article>
 </template>
 
 <script>
 import anime from 'animejs'
-import Next from '@/Next'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { fetchAbout } from '@/scripts/api'
@@ -138,9 +133,6 @@ const wrap = (el, wrapper) => {
 
 export default {
   name: 'About',
-  components: {
-    Next
-  },
   data: () => ({
     content: null,
     splits: [],

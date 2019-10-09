@@ -2,6 +2,7 @@
   <ul class="intro">
     <li class="intro__li" v-for="(slide, i) in slides" :key="slide">
       <img
+        @load="onLoad"
         v-show="i === index"
         class="intro__img"
         :src="require(`./assets/intro/${slide}.jpg`)"
@@ -13,8 +14,6 @@
 </template>
 
 <script>
-import imagesLoaded from 'imagesloaded'
-
 const desktop = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 const mob = ['1', '2', '5', '6', '7', '8', '9', '10']
 const slides = window.innerWidth > 500 ? desktop : mob
@@ -22,16 +21,12 @@ const slides = window.innerWidth > 500 ? desktop : mob
 export default {
   name: 'Intro',
   data: () => ({
+    loaded: 0,
     slides,
     delay: 280,
     index: 0,
     interval: null
   }),
-  created() {
-    imagesLoaded('.intro', () => {
-      this.start()
-    })
-  },
   methods: {
     start() {
       this.interval = setInterval(() => {
@@ -42,6 +37,10 @@ export default {
           this.index = this.index + 1
         }
       }, this.delay)
+    },
+    onLoad() {
+      this.loaded++
+      if (this.loaded === this.slides.length) this.start()
     }
   }
 }

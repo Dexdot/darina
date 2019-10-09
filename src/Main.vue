@@ -51,23 +51,14 @@
         </div>
       </div>
     </template>
-
-    <Next to="/about" right>
-      <span slot="title">About</span>
-      <span slot="text">account & project management</span>
-    </Next>
   </section>
 </template>
 
 <script>
 import { getCases } from '@/scripts/api'
-import Next from '@/Next'
 
 export default {
   name: 'Main',
-  components: {
-    Next
-  },
   props: { scroll: { type: Number, default: 0 } },
   data: () => ({
     titleIndex: -1,

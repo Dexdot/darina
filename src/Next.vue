@@ -26,12 +26,11 @@ export default {
 @import "~@/sass/utils"
 
 .next
-  position: relative
+  position: fixed
+  bottom: 0
+  left: 0
 
   width: 100vw
-  height: 100vh
-  // height: calc(var(--vh, 1vh) * 100)
-  // padding-bottom: 20vh
   height: 200px
   padding-left: var(--unit-h)
   padding-bottom: 40px
@@ -71,7 +70,7 @@ export default {
   font-size: 48px
 
   display: block
-  margin-bottom: 8px
+  // margin-bottom: 8px
 
 .next-container
   position: relative
