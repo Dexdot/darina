@@ -8,20 +8,21 @@
     }"
     @click="onAppClick"
   >
+    <!-- Header, nav -->
     <router-link
       ref="logo"
-      :class="['logo', { hidden: $route.name === 'case' || hideNav }]"
+      :class="['logo', { hidden: isCase || hideNav }]"
       to="/"
       >Darina Yurina</router-link
     >
 
     <MenuButton
       :active="isMenuActive"
-      :hidden="$route.name === 'case' || hideNav"
+      :hidden="isCase || hideNav"
       @click="toggleMenu"
     />
 
-    <nav :class="['nav', { hidden: $route.name === 'case' || hideNav }]">
+    <nav :class="['nav', { hidden: isCase || hideNav }]">
       <ul class="u-flex">
         <li class="nav__li">
           <router-link class="nav__link" to="/">Cases</router-link>
@@ -32,20 +33,25 @@
       </ul>
     </nav>
 
+    <!-- Modals -->
     <Menu :active="isMenuActive" @click="isMenuActive = false" />
     <Credits :active="isCreditsActive" @credits-close="toggleCredits(false)" />
     <Intro ref="intro" v-if="!visited" @complete="onIntroComplete" />
 
+    <!-- Next -->
     <Next v-if="nextName === 'about'" to="/">
       <span slot="title">Cases</span>
       <span slot="text">2017-2019</span>
     </Next>
 
-    <Next v-if="nextName === 'main'" to="/about" right>
+    <Next v-if="nextName === 'main'" to="/about" right :cover="$refs.nextcover">
       <span slot="title">About</span>
       <span slot="text">account & project management</span>
     </Next>
 
+    <div class="next-observe" ref="nextcover"></div>
+
+    <!-- Scroll -->
     <div class="scroll-container" ref="container">
       <main
         class="scroll-inner"
@@ -129,7 +135,8 @@ export default {
     vs: null,
     winHeight: 0,
     dir: {},
-    nextName: ''
+    nextName: '',
+    isCase: ''
   }),
   computed: {
     activeColor() {
@@ -319,6 +326,8 @@ export default {
       await transitions[transitionLeave].leave(el)
 
       this.nextName = this.dir.to.name
+      this.isCase = this.$route.name === 'case'
+
       this.scroll = 0
       this.translate = 0
       window.scrollTo(0, 0)
@@ -329,6 +338,8 @@ export default {
   watch: {
     $route(to, from) {
       if (this.nextName === '') this.nextName = this.$route.name
+      if (this.isCase === '') this.isCase = this.$route.name === 'case'
+
       this.dir = { to, from }
     }
   }
@@ -364,7 +375,9 @@ body.is-macos:not(.is-safari)
       color: var(--color-text)
 
   @media (max-width: 500px)
+    position: relative
     padding-bottom: 200px
+
 
 .app--faded
   .logo, .nav, .menu-btn
@@ -476,4 +489,18 @@ body.is-macos:not(.is-safari)
   .nav__link.router-link-exact-active:hover::before
     transform: translate(-50%, -8px)
     opacity: 1
+
+
+.next-observe
+  position: absolute
+  bottom: -60px
+  left: 0
+  width: 100%
+  height: 200px
+
+  pointer-events: none
+
+  display: none
+  @media (max-width: 500px)
+    display: block
 </style>

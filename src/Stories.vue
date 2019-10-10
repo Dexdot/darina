@@ -281,14 +281,6 @@ export default {
       margin-left: 0.27vw
       margin-right: 0.27vw
 
-  &:first-child
-    @media (max-width: 500px)
-      margin-left: calc(var(--unit-h) * 2)
-
-  &:last-child
-    @media (max-width: 500px)
-      margin-right: calc(var(--unit-h) * 2)
-
 .swiper-slide:not(.swiper-slide-active)
   transform: scale(0.89)
   @media (max-width: 500px)
@@ -349,7 +341,9 @@ export default {
     top: 52%
 
   &:hover
-    transform: translate(0, -50%)
+    @media (min-width: 501px)
+      transform: translate(0, -50%)
+
     @media (min-width: 1000px) and (max-width: 1440px) and (max-height: 700px)
       transform: translate(0, 0)
 
@@ -367,7 +361,7 @@ export default {
       transform: translate(calc(-1 * var(--unit-h)), 0)
 
     @media (max-width: 500px)
-      transform: translate(0, -50%)
+      transform: translate(calc(-1 * var(--unit-h)), -50%)
 
     svg
       margin-right: 8px
@@ -383,7 +377,7 @@ export default {
 
     .stories-link__text
       @media (max-width: 500px)
-        transform: translateX(calc(-1 * var(--unit-h) - 4px))
+        transform: translateX(calc(-1 * var(--unit-h) + 8px))
 
   &--next
     right: 0
@@ -393,7 +387,7 @@ export default {
       transform: translate(var(--unit-h), 0)
 
     @media (max-width: 500px)
-      transform: translate(0, -50%)
+      transform: translate(calc(var(--unit-h)), -50%)
 
     svg
       margin-left: 8px
@@ -408,7 +402,7 @@ export default {
 
     .stories-link__text
       @media (max-width: 500px)
-        transform: translateX(calc(var(--unit-h) + 4px))
+        transform: translateX(calc(var(--unit-h) - 8px))
 
     .stories-link__inner
       flex-direction: row-reverse
