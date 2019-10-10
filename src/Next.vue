@@ -2,12 +2,16 @@
   <section :class="['next', { right }]">
     <div class="next__bg"></div>
     <div :class="['next-container', { visible }]">
-      <router-link :to="to">
-        <h2 class="next__title">
-          <slot name="title"></slot>
-        </h2>
-      </router-link>
-      <p><slot name="text"></slot></p>
+      <div class="u-ovh">
+        <router-link class="next-anim" :to="to">
+          <h2 class="next__title">
+            <slot name="title"></slot>
+          </h2>
+        </router-link>
+      </div>
+      <div class="u-ovh">
+        <p class="next-anim"><slot name="text"></slot></p>
+      </div>
     </div>
   </section>
 </template>
@@ -98,12 +102,19 @@ export default {
   position: relative
   z-index: 1
 
-  transition: 0.8s ease
-  opacity: 0
-  &.visible
-    opacity: 1
+.next-anim
+  display: block
+  transform: translate3d(0, 100%, 0)
+  transition: transform 1.2s cubic-bezier(.25,.75,.34,.98)
+
+.next-container.visible
+  .next-anim
+    transform: translate3d(0, 0%, 0)
 
 .next-container p
   opacity: 0.8
+
+  &.next-anim
+    transition-delay: 0.1s
   // opacity: 0.3
 </style>
