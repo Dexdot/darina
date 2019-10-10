@@ -493,7 +493,7 @@ body.is-macos:not(.is-safari)
 
 .next-observe
   position: absolute
-  bottom: -60px
+  bottom: 0
   left: 0
   width: 100%
   height: 200px

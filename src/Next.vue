@@ -1,7 +1,7 @@
 <template>
   <section :class="['next', { right }]">
     <div class="next__bg"></div>
-    <div class="next-container" :style="{ opacity }">
+    <div :class="['next-container', { visible }]">
       <router-link :to="to">
         <h2 class="next__title">
           <slot name="title"></slot>
@@ -21,7 +21,7 @@ export default {
     cover: { type: Element }
   },
   data: () => ({
-    opacity: 0
+    visible: false
   }),
   mounted() {
     this.observe()
@@ -30,9 +30,8 @@ export default {
     observe() {
       const observer = new IntersectionObserver(
         entries => {
-          entries.forEach(({ intersectionRatio }) => {
-            // console.log(intersectionRatio)
-            this.opacity = intersectionRatio + 0.1
+          entries.forEach(({ intersectionRatio, isIntersecting }) => {
+            this.visible = isIntersecting && intersectionRatio >= 0.8
           })
         },
         { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
@@ -98,6 +97,11 @@ export default {
 .next-container
   position: relative
   z-index: 1
+
+  transition: 0.8s ease
+  opacity: 0
+  &.visible
+    opacity: 1
 
 .next-container p
   opacity: 0.8
