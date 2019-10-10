@@ -362,8 +362,6 @@ body.is-macos:not(.is-safari)
 @import "~@/sass/utils"
 
 #app
-  min-height: 100vh
-  min-height: calc(var(--vh, 1vh) * 100)
   color: var(--color-text)
   background: var(--color-bg)
 
@@ -415,6 +413,7 @@ body.is-macos:not(.is-safari)
 
 .scroll-container
   width: 100vw
+  min-height: 100vh
   height: 100vh
   height: calc(var(--vh, 1vh) * 100)
   overflow: hidden

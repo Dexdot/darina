@@ -61,6 +61,8 @@ export default {
   pointer-events: none
   user-select: none
 
+  background: #fff
+
 .intro__img
   z-index: 1
   position: absolute
