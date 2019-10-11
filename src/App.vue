@@ -157,7 +157,8 @@ export default {
       }
     },
     hideNav() {
-      return isSafari() || isMobileDevice() ? false : !this.isNotScrolling
+      return isMobileDevice() ? false : !this.isNotScrolling
+      // return isSafari() || isMobileDevice() ? false : !this.isNotScrolling
     }
   },
   async created() {
