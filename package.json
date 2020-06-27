@@ -5,8 +5,7 @@
   "scripts": {
     "lint": "vue-cli-service lint",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "deploy": "yarn build && now"
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "@contentful/rich-text-html-renderer": "^13.1.0",

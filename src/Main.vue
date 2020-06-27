@@ -181,6 +181,7 @@ export default {
   padding-top: 0.35em
 
 .case
+  white-space: nowrap
   line-height: 1
   +yo('font-size', (320px: 40px, 375px: 48px, 1920px: 96px))
 

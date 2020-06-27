@@ -26,12 +26,23 @@
       >
         <div class="story-img" @click="onSlideClick($event, i)">
           <img
-            :src="story.fields.file.url"
+            v-if="isImage(story)"
+            :src="getImageUrl(story)"
             :alt="story.fields.title"
             class="story-img__i"
           />
+          <video
+            v-if="isVideo(story)"
+            :src="story.fields.file.url"
+            class="story-img__i"
+            muted
+            autoplay
+            playsinline
+            loop
+          />
         </div>
       </swiper-slide>
+
       <swiper-slide>
         <div
           class="story-img"
@@ -109,6 +120,9 @@
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { mapGetters } from 'vuex'
+
+import { isImage, isVideo, getImageUrl } from '@/scripts/helpers'
+
 export default {
   name: 'Stories',
   components: {
@@ -122,7 +136,6 @@ export default {
       slidesPerView: 'auto',
       autoHeight: true,
       centeredSlides: true,
-      // slideToClickedSlide: true,
       grabCursor: true
     },
     mounted: false
@@ -170,7 +183,10 @@ export default {
       } else {
         swiper.slideTo(i)
       }
-    }
+    },
+    getImageUrl,
+    isImage,
+    isVideo
   },
   mounted() {
     this.mounted = true
