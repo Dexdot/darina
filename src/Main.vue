@@ -13,11 +13,12 @@
             'case',
             { 'case--faded': titleIndex !== i && titleIndex !== -1 }
           ]"
-          @mouseover="onMouseover({ fields: project.fields, i })"
           @mouseout="onMouseout"
         >
           <sup class="case__sup case__sup--soon">soon</sup>
-          {{ project.fields.title }}
+          <span @mouseover="onMouseover({ fields: project.fields, i })">
+            {{ project.fields.title }}
+          </span>
         </p>
         <router-link
           v-else
@@ -26,12 +27,13 @@
             { 'case--faded': titleIndex !== i && titleIndex !== -1 }
           ]"
           :to="`/case/${project.fields.slug}`"
-          @mouseover.native="onMouseover({ fields: project.fields, i })"
           @mouseout.native="onMouseout"
         >
           <sup class="case__sup case__sup--year">{{ project.fields.year }}</sup>
-          {{ project.fields.title }}</router-link
-        >
+          <span @mouseover="onMouseover({ fields: project.fields, i })">
+            {{ project.fields.title }}
+          </span>
+        </router-link>
       </li>
     </ul>
 
@@ -175,13 +177,14 @@ export default {
   padding-bottom: 0.325em
   display: inline-flex
   text-align: right
+  width: 100%
 
 .is-mob .cases-li,
 .is-macos .cases-li
   padding-top: 0.35em
 
 .case
-  white-space: nowrap
+  width: 100%
   line-height: 1
   +yo('font-size', (320px: 40px, 375px: 48px, 1920px: 96px))
 

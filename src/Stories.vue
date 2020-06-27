@@ -233,9 +233,6 @@ export default {
 
   @media (max-width: 500px)
     padding-top: 40px
-  // @media (max-width: 500px)
-  //   align-items: flex-start
-  //   padding-top: 96px
 
 .stories-caption
   +eng(b)
@@ -281,11 +278,12 @@ export default {
   object-fit: cover
 
 .swiper-slide
+  will-change: transform
   transition: transform 0.25s cubic-bezier(0.645, 0.045, 0.355, 1)
   width: auto
 
   @media (max-width: 500px)
-    transition: transform 0.2s ease
+    transition: transform 0.4s ease
 
   .story-img
     margin-left: 1vw
