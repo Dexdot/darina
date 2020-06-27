@@ -13,7 +13,6 @@
         <div class="about__content">
           <div class="about__scene" ref="scene">
             <img
-              @load="onImageLoad"
               :src="content.image.fields.file.url"
               :alt="content.image.fields.title"
             />
@@ -122,7 +121,6 @@ import anime from 'animejs'
 
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 import { fetchAbout } from '@/scripts/api'
-import distortion from '@/hover'
 
 const { SplitText } = window
 
@@ -136,8 +134,7 @@ export default {
   data: () => ({
     content: null,
     splits: [],
-    splitted: false,
-    scene: null
+    splitted: false
   }),
   methods: {
     render: item => documentToHtmlString(item),
@@ -187,23 +184,19 @@ export default {
     },
     observe() {
       const elements = [
-        this.$refs.scene,
-        this.$el.querySelector('.about__info'),
-        this.$el.querySelector('.credits-button'),
+        ...Array.from(
+          this.$el.querySelectorAll(
+            '.about__scene, .about__info, .credits-button'
+          )
+        ),
         ...this.$el.querySelector('.about__text').children
       ]
 
       const observer = new IntersectionObserver(
         entries => {
-          entries.forEach(({ isIntersecting, target, intersectionRatio }) => {
-            if (!target.classList.contains('about__scene') && isIntersecting) {
+          entries.forEach(({ isIntersecting, target }) => {
+            if (isIntersecting) {
               target.classList.add('visible')
-            } else if (
-              isIntersecting &&
-              intersectionRatio >= 0.5 &&
-              this.scene
-            ) {
-              this.scene.next()
             }
           })
         },
@@ -214,17 +207,6 @@ export default {
 
       elements.forEach(el => {
         observer.observe(el)
-      })
-    },
-    onImageLoad() {
-      this.scene = distortion({
-        parent: this.$refs.scene,
-        image1: this.content.image.fields.file.url,
-        image2: this.content.image.fields.file.url,
-        displacementImage: require('./displace.png'),
-        intensity: window.innerWidth > 500 ? 0.0125 : 0.02,
-        speedIn: 2,
-        speedOut: 2
       })
     }
   },
@@ -255,7 +237,7 @@ export default {
 .about__title
   +man
   +yo('font-size', (320px: 32px, 375px: 42px, 1920px: 96px, 2550px: 120px))
-  line-height: 0.94
+  line-height: 0.88
   margin-bottom: 1.6em
 
   @media (max-width: 1000px)
@@ -296,17 +278,9 @@ export default {
     width: calc(100vw - var(--unit-h))
 
   img
-    opacity: 0
-    pointer-events: none
-
     display: block
     width: 100%
     height: auto
-
-  /deep/ canvas
-    position: absolute
-    top: 0
-    left: 0
 
 .about__email
   margin-top: 2em
@@ -342,10 +316,11 @@ export default {
     +eng(b)
 
 .about__text
+  line-height: 1.2
   margin-left: mix(7)
   width: column-spans(3)
   p
-    margin-bottom: 2.2em
+    margin-bottom: 24px
 
   @media (max-width: 1000px)
     margin: 0
@@ -387,4 +362,13 @@ export default {
 @for $i from 1 through 7
   .about__info li:nth-child(#{$i})
     transition: 0.4s ease (#{$i*0.075s})
+
+.about__scene img
+  transform: translateY(40%)
+  opacity: 0
+  transition: 0.8s cubic-bezier(0.33, 1, 0.68, 1) 0.1s
+
+.about__scene.visible img
+  transform: translateY(0)
+  opacity: 1
 </style>

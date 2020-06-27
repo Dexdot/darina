@@ -21,8 +21,7 @@ export default {
   name: 'Next',
   props: {
     to: { type: [String, Object], default: '/' },
-    right: { type: Boolean, default: false },
-    cover: { type: Element }
+    right: { type: Boolean, default: false }
   },
   data: () => ({
     visible: false
@@ -41,7 +40,8 @@ export default {
         { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] }
       )
 
-      observer.observe(this.cover)
+      const cover = document.querySelector('.next-observe')
+      if (cover) observer.observe(cover)
     }
   }
 }
@@ -61,7 +61,7 @@ export default {
   padding-left: var(--unit-h)
   padding-bottom: 40px
 
-  display: none
+  display: flex
   flex-direction: column
   justify-content: flex-end
   align-items: flex-start
@@ -73,8 +73,8 @@ export default {
   // & a
   //   color: #fff !important
 
-  @media (max-width: 500px)
-    display: flex
+  @media (min-width: 501px)
+    display: none
 
 .next.right
   align-items: flex-end

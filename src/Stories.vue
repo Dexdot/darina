@@ -266,10 +266,7 @@ export default {
     content: ''
     display: block
     width: 100%
-    padding-bottom: 175.65%
-    @media (max-width: 500px)
-      padding-bottom: 160%
-      // padding-bottom: 180%
+    padding-top: 177.77%
 
   @media (max-width: 500px)
     width: calc(100vw - (4 * var(--unit-h)))

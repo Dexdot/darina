@@ -1,9 +1,11 @@
 <template>
   <button :class="['menu-btn', { active, hidden }]" @click="$emit('click')">
-    <span class="menu-btn__circle"></span>
-    <span class="menu-btn__circle"></span>
-    <span class="menu-btn__circle"></span>
-    <span class="menu-btn__circle"></span>
+    <div class="menu-btn__inner">
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+      <span class="menu-btn__circle"></span>
+    </div>
   </button>
 </template>
 
@@ -22,12 +24,10 @@ export default {
   display: flex
   flex-wrap: wrap
 
-  width: 24px
-  height: 24px
-  margin-left: -4px
-  margin-top: -4px
+  width: 40px
+  height: 40px
 
-  transition: transform 0.25s ease-in-out, opacity 0.25s ease
+  transition: opacity 0.25s ease
   transform-origin: 50% 50%
 
 .menu-btn:hover
@@ -36,11 +36,8 @@ export default {
   @media (max-width: 500px)
     opacity: 1
 
-.menu-btn.active
+.menu-btn.active .menu-btn__inner
   transform: rotate(45deg)
-
-.menu-btn__circle:nth-child(2)
-  margin-right: 30%
 
 .menu-btn:not(.active) .menu-btn__circle
   background: var(--color-text)
@@ -48,10 +45,30 @@ export default {
 .menu-btn.active .menu-btn__circle
   background: #fff
 
+.menu-btn__inner
+  transition: transform 0.25s ease-in-out
+  transform-origin: 50% 50%
+
+  position: absolute
+  top: 0
+  right: 0
+
+  display: flex
+  flex-wrap: wrap
+  width: 12px
+  height: 12px
+
 .menu-btn__circle
   border-radius: 50%
+  min-width: 4px
   width: 4px
   height: 4px
-  margin-left: 4px
+
+.menu-btn__circle:nth-child(3),
+.menu-btn__circle:nth-child(4)
   margin-top: 4px
+
+.menu-btn__circle:nth-child(1),
+.menu-btn__circle:nth-child(3)
+  margin-right: 4px
 </style>

@@ -41,15 +41,15 @@
     <!-- Next -->
     <Next v-if="nextName === 'about'" to="/">
       <span slot="title">Cases</span>
-      <span slot="text">2017-2019</span>
+      <span slot="text">2017-{{ new Date().getFullYear() }}</span>
     </Next>
 
-    <Next v-if="nextName === 'main'" to="/about" right :cover="$refs.nextcover">
+    <Next v-if="nextName === 'main'" to="/about" right>
       <span slot="title">About</span>
       <span slot="text">account & project management</span>
     </Next>
 
-    <div class="next-observe" ref="nextcover"></div>
+    <div class="next-observe"></div>
 
     <!-- Scroll -->
     <div class="scroll-container" ref="container">
@@ -432,6 +432,7 @@ body.is-macos:not(.is-safari)
   font-size: 16px
   text-transform: uppercase
   letter-spacing: 0.24em
+  line-height: 0.8
 
   z-index: 2
   position: fixed
